@@ -1,0 +1,11 @@
+Usage: queenside [-protocol p] [-network n -ia1 path -ia2 path] [--demo --help]
+Plays a game of chess with two AIs on the same computer based on the Universal Chess Interface
+
+	-protocol P	Uses protocol mode P (0:text, 1:binary)
+				Default is text mode
+	-network N	Allows server to run on "localhost", LAN "local" or WAN "wide"
+				Default is "localhost", and you need to provide filepath for two AIs
+	-ia1 P		If network mode is "localhost", provides the relative path P to the binary
+	-ia2 P		If network mode is "localhost", provides the relative path P to the binary
+	--demo		Displays demo and exit
+	--help		Displays help and exit
