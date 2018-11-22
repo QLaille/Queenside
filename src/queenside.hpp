@@ -5,40 +5,75 @@
 #include <iostream>
 #include <fstream>
 #include <cstring>
+#include <unordered_map>
+#include <list>
+
+#include <boost/asio.hpp>
+
+using boost::asio::ip::tcp;
 
 namespace Queenside
 {
-	class Board {
-	//list of materials of white and black
-	// board state
-	//can convert to FEN
+	enum Client_Type_e {
+		PLAYER_WHITE,
+		PLAYER_BLACK,
 	};
 
-	class Ipiece {
-	// defined by its possible moves
+	struct Cell_s {
+		int y;	// letter
+		int x;	// number
+	};
+
+	class IMaterial {
+		public:
+			virtual void move(/* new cell to move to*/);
+			virtual bool isMovePossible(/*suggested cell*/);
+	};
+
+	class Board {
+		public:
+			Board() = default;
+			~Board();
+			std::string toFEN();
+			bool isMovePossible(/* suggested cell by user */);
+			void move(/*from cell to cell*/);
+		private:
+			bool _move;
+			int _castleW;
+			int _castleB;
+			std::list<IMaterial> _whiteMats;
+			std::list<IMaterial> _blackMats;
 	};
 
 	class Client {
-		// Type (white, black, spectator)
-		// Socket
+		public:
+			Client() = default;
+			~Client();
+		private:
+			Client_Type_e _type;
+//			Socket _socket;
 	};
 
-	//when destroyed, a gameroom returns the clients to the lobby
 	class GameRoom {
-	// client1
-	// client2
-	// spectators
-	// board
-	private:
-		Client _white;
-		Client _black;
-		Board _board;
+		public:
+			GameRoom() = default;
+			~GameRoom();
+		private:
+			Client _white;
+			Client _black;
+			Board _board;
 	};
 
-	//singleton, creates GameRooms and handles lone clients
+	//singleton, creates GameRooms and handles clients not in game rooms
 	class Lobby {
-	//array of Clients not in GameRoom
+		public:
+			Lobby() = default;
+			~Lobby();
+			void createGameRoom();
+			void waitForInput();
+		private:
+			std::unordered_map<std::string, Client> clients_;
 	};
-}
+};
 
 #endif /* !QUEENSIDE_HPP */
