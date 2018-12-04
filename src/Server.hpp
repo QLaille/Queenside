@@ -3,10 +3,12 @@
 
 #include <boost/asio.hpp>
 #include <boost/algorithm/string.hpp>
+#include <boost/bind.hpp>
 
 #include "SwitchWithStrings.hpp"
 #include "IDGenerator.hpp"
-#include "Client.hpp"
+#include "OneOnOne.hpp"
+
 #include "Broadcast.hpp"
 #include "Coordinator.hpp"
 
@@ -21,7 +23,7 @@ public:
 	Server(boost::asio::io_service&, std::size_t);
 private:
 	void startAccept();
-	void handleAccept(Client::pointer, const boost::system::error_code&);
+	void handleAccept(OneOnOne::pointer newConnection, const boost::system::error_code& er);
 
 	tcp::acceptor _acceptor;
 //	std::list<GameMaster> _games;

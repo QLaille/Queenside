@@ -12,13 +12,13 @@ namespace Queenside {
 	class Broadcast {
 		public:
 			static Broadcast& getInstance();
-			void addClient(Client::pointer&);
+			void addClient(Client&);
 			void removeClient(const std::string &clientId);
 		private:
 			Broadcast() = default;
 
-			std::unordered_map<clientID, Client::pointer> _clients;
-			std::unordered_map<clientID, Client::pointer>::iterator _iterator;
+			std::unordered_map<clientID, Client> _clients;
+			std::unordered_map<clientID, Client>::iterator _iterator;
 	};
 };
 

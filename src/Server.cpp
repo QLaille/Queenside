@@ -11,24 +11,24 @@ namespace Queenside {
 
 	void Server::startAccept()
 	{
-		Client::pointer new_connection = Client::create(_acceptor.get_io_service());
+		OneOnOne::pointer new_connection = OneOnOne::create(_acceptor.get_io_service());
 
 		_acceptor.async_accept(*new_connection->socket(),
 			boost::bind(&Server::handleAccept, this, new_connection,
 				boost::asio::placeholders::error));
 	}
 
-	void Server::handleAccept(Client::pointer client, const boost::system::error_code& er)
+	void Server::handleAccept(OneOnOne::pointer newConnection, const boost::system::error_code& er)
 	{
-//		std::string idc = IDGenerator::getInstance().generateIDClient();
 		Broadcast bd = Broadcast::getInstance();
 		Coordinator cd = Coordinator::getInstance();
+		Client client;
 		std::string idc = "r";
 
-		client->setClientID(idc);
+		client.setClientID(idc);
 		bd.addClient(client);
-		cd.addClient(client->getClientID());
+		cd.addClient(client.getClientID());
 		startAccept();
-//		OneOnOne::start(client);
+		newConnection->start(client);
 	}
 };

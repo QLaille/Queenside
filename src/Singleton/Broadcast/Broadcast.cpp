@@ -8,9 +8,11 @@ namespace Queenside {
 		return (instance);
 	}
 
-	void Broadcast::addClient(Client::pointer&)
+	void Broadcast::addClient(Client&)
 	{}
 
 	void Broadcast::removeClient(const std::string &clientId)
 	{}
 }
+
+//TODO: Write the methods

@@ -14,3 +14,5 @@ namespace Queenside {
 	request_t Protocol::inBinaryMode()
 	{}
 };
+
+//TODO: Write the methods
