@@ -1,35 +1,52 @@
-PROJECT					(Babel)
+PROJECT					(QUEENSIDE)
 CMAKE_MINIMUM_REQUIRED	(VERSION 2.6)
+SET (BINARY_NAME Queenside)
 
+SET (BOOST_VERSION 1.67.0)
+
+### BINARY FOLDER
+SET	(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
+
+### CONAN SETUP
+INCLUDE (${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+conan_basic_setup()
+
+### SETUP CPP17
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
 endif()
 
-INCLUDE (${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-conan_basic_setup()
+### PATH HANDLING
+SET (ROOT src)
+INCLUDE_DIRECTORIES(
+	${ROOT}/Client
+	${ROOT}/Protocol
+	${ROOT}/Service
+	${ROOT}/Singleton/Broadcast
+	${ROOT}/Singleton/Coordinator
+	${ROOT}/Utils
+	${ROOT}/Utils/IDGenerator
+)
 
-SET (SERVER_NAME Queenside)
+FILE (GLOB SOURCES
+	"${ROOT}/*.*pp"
+	"${ROOT}/Client/*.*pp"
+	"${ROOT}/Protocol/*.*pp"
+	"${ROOT}/Service/*.*pp"
+	"${ROOT}/Singleton/Broadcast/*.*pp"
+	"${ROOT}/Singleton/Coordinator/*.*pp"
+	"${ROOT}/Utils/*.*pp"
+	"${ROOT}/Utils/IDGenerator/*.*pp"
+)
 
-### === SERVER ===
-
-SET (SERVER_PATH src/)
-set	(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
-INCLUDE_DIRECTORIES	(./${SERVER_PATH})
-FILE (GLOB SERVER_FILES ${SERVER_PATH}*.cpp ${SERVER_PATH}*.hpp)
-ADD_EXECUTABLE (${SERVER_NAME} ${SERVER_FILES})
-FIND_PACKAGE (Boost 1.67.0 REQUIRED)
-
-IF (Boost_FOUND)
-	INCLUDE_DIRECTORIES	(${Boost_INCLUDE_DIRS})
-	LINK_DIRECTORIES (${Boost_LIBRARY_DIRS} )
-ENDIF()
-
+### FLAGS FOR GPP
 IF (UNIX AND NOT APPLE)
-	SET	(UNIX_LIB -lboost_system -lpthread)
+	SET	(UNIX_LIB -lboost_system -lboost_thread -lpthread)
 ENDIF()
 
-TARGET_LINK_LIBRARIES	(${SERVER_NAME}
+ADD_EXECUTABLE (${BINARY_NAME} ${SOURCES})
+TARGET_LINK_LIBRARIES	(${BINARY_NAME}
 	${SERVER_FLAGS}
-	${UNIX_LIB}
 	${CONAN_LIBS}
+	${UNIX_LIB}
 )
