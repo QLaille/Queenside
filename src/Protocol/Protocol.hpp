@@ -2,7 +2,8 @@
 #define QUEENSIDE_PROTOCOL_HPP
 
 #include <string>
-
+#include <vector>
+#include <boost/algorithm/string.hpp>
 #include "SwitchWithStrings.hpp"
 
 namespace Queenside {
@@ -13,8 +14,7 @@ enum request_type_s {
 	joinRoom,
 	quitRoom,
 	roomInfo,
-	declareReady,
-	declareMove
+	declareReady
 } request_type_t;
 
 typedef
@@ -29,8 +29,7 @@ public:
 	Protocol(int);
 	~Protocol() = default;
 	request_t getRequest(const std::string&);
-	request_t inTextMode();
-	request_t inBinaryMode();
+	request_t inTextMode(const std::string &txt);
 private:
 	int _mode;
 };

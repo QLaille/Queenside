@@ -4,6 +4,7 @@
 #include "Client.hpp"
 
 #include <string>
+#include <optional>
 #include <unordered_map>
 
 typedef std::string clientID;
@@ -14,6 +15,7 @@ namespace Queenside {
 			static Broadcast& getInstance();
 			void addClient(Client&);
 			void removeClient(const std::string &clientId);
+			std::optional<Client> getClient(const std::string &clientID);
 		private:
 			Broadcast() = default;
 
@@ -21,5 +23,6 @@ namespace Queenside {
 			std::unordered_map<clientID, Client>::iterator _iterator;
 	};
 };
+//TODO: Add methods to communicate with clients, room, broadcast
 
 #endif /* !QUEENSIDE_SERVICE_BROADCAST_HPP */

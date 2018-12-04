@@ -24,6 +24,6 @@ private:
 };
 };
 
-//TODO: Expand the method
+//TODO: Expand the methods to help putting people in lobbies
 
 #endif /* !QUEENSIDE_SERVICE_COORDINATOR_HPP */
