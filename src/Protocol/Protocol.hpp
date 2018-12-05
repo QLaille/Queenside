@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 #include <boost/algorithm/string.hpp>
+#include <iostream>
+
 #include "SwitchWithStrings.hpp"
 
 namespace Queenside {
@@ -11,10 +13,8 @@ namespace Queenside {
 typedef
 enum request_type_s {
 	unknown = 0,
-	joinRoom,
-	quitRoom,
-	roomInfo,
-	declareReady
+	text,
+	uci,
 } request_type_t;
 
 typedef
@@ -26,12 +26,11 @@ struct request_s {
 
 class Protocol {
 public:
-	Protocol(int);
+	Protocol() = default;
 	~Protocol() = default;
 	request_t getRequest(const std::string&);
 	request_t inTextMode(const std::string &txt);
 private:
-	int _mode;
 };
 };
 

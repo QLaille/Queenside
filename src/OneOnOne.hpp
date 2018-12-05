@@ -4,13 +4,20 @@
 #include "Client.hpp"
 #include "Protocol.hpp"
 
+#include <string>
+#include <memory>
+
 #include <boost/asio.hpp>
+#include <boost/bind.hpp>
+#include <boost/regex.hpp>
 #include <boost/enable_shared_from_this.hpp>
+#include <boost/shared_ptr.hpp>
+#include <boost/algorithm/string.hpp>
 
 using boost::asio::ip::tcp;
 
 namespace Queenside {
-class OneOnOne {
+class OneOnOne: public boost::enable_shared_from_this<OneOnOne> {
 public:
 	typedef boost::shared_ptr<OneOnOne> pointer;
 	void start(Client);
@@ -19,8 +26,18 @@ public:
 private:
 	OneOnOne(boost::asio::io_service&);
 
+	void close();
+	void asyncDoRead(const boost::system::error_code& er);
+	void doWrite(std::string);
+	void extractRequest(const boost::system::error_code& er, std::size_t len);
+	void processRequest(const request_t&);
+
+	void processPlayerUCI(const request_t &req);
+
 	std::shared_ptr<tcp::socket> _socket;
 	std::string _clientID;
+	boost::asio::streambuf _streamBuf;
+	Protocol _protocol;
 };
 };
 
