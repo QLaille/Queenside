@@ -26,12 +26,16 @@ public:
 private:
 	OneOnOne(boost::asio::io_service&);
 
+	/* Terminate */
 	void close();
+	/* Communicate */
 	void asyncDoRead(const boost::system::error_code& er);
 	void doWrite(std::string);
+
+	/* Process Request */
 	void extractRequest(const boost::system::error_code& er, std::size_t len);
 	void processRequest(const request_t&);
-
+	void processPlayerText(const request_t &req);
 	void processPlayerUCI(const request_t &req);
 
 	std::shared_ptr<tcp::socket> _socket;

@@ -16,7 +16,7 @@ void Coordinator::findPlayer(const std::string &Id)
 	//check if client is already here but not in a room
 	_notInRoomIt = std::find(_notInRoom.begin(), _notInRoom.end(), Id);
 
-	if (_notInRoomIt != _notInRoom.end)
+	if (_notInRoomIt != _notInRoom.end())
 		return;
 
 	for (auto it: _rooms) {
@@ -29,9 +29,9 @@ void Coordinator::findPlayer(const std::string &Id)
 
 void Coordinator::findRoom(const std::string &roomId)
 {
-	_roomsIt = std::find(_rooms.begin(), _rooms.end(), roomId);
+	_roomsIt = _rooms.find(roomId);
 
-	if (_roomsIt != _rooms.end)
+	if (_roomsIt != _rooms.end())
 		return;
 	return;
 }
@@ -42,7 +42,7 @@ void Coordinator::addClient(const std::string &Id)
 	//check if client is already here but not in a room
 	_notInRoomIt = std::find(_notInRoom.begin(), _notInRoom.end(), Id);
 
-	if (_notInRoomIt != _notInRoom.end)
+	if (_notInRoomIt != _notInRoom.end())
 	_notInRoom.push_front(Id);
 
 }
@@ -52,7 +52,7 @@ bool Coordinator::removeClient(const std::string &Id)
 {
 	_notInRoomIt = std::find(_notInRoom.begin(), _notInRoom.end(), Id);
 
-	if (_notInRoomIt != _notInRoom.end) {
+	if (_notInRoomIt != _notInRoom.end()) {
 		_notInRoom.remove(Id);
 		return (true);
 	} else
@@ -92,7 +92,7 @@ bool Coordinator::removeRoom(const std::string &roomId)
 {
 	_roomsIt = _rooms.find(roomId);
 
-	if (_roomsIt != _rooms.end) {
+	if (_roomsIt != _rooms.end()) {
 		_rooms.erase(roomId);
 		return (true);
 	} else
@@ -114,7 +114,7 @@ std::list<std::string> Coordinator::dumpPlayerFromRoom(const std::string &roomId
 	std::list<std::string> ret = {0};
 	auto it = _rooms.find(roomId);
 
-	if (it != _rooms.end) {
+	if (it != _rooms.end()) {
 		for (auto playerIt: it->second)
 			ret.push_front(playerIt.first);
 	}

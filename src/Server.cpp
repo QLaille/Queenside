@@ -20,7 +20,7 @@ namespace Queenside {
 
 	void Server::handleAccept(OneOnOne::pointer newConnection, const boost::system::error_code& er)
 	{
-		Broadcast bd = Broadcast::getInstance();
+		Broadcaster bd = Broadcaster::getInstance();
 		Coordinator cd = Coordinator::getInstance();
 		Client client;
 		std::string idc = "r";

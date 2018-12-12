@@ -1,28 +1,28 @@
-#include "Broadcast.hpp"
+#include "Broadcaster.hpp"
 
 namespace Queenside {
-	Broadcast& Broadcast::getInstance()
+	Broadcaster& Broadcaster::getInstance()
 	{
-		static Broadcast instance;
+		static Broadcaster instance;
 
 		return (instance);
 	}
 
-	void Broadcast::addClient(Client &client)
+	void Broadcaster::addClient(Client &client)
 	{
 		_iterator = _clients.find(client.getClientID());
 		if (_iterator != _clients.end())
 			_clients.insert(std::pair<std::string, Client>(client.getClientID(), client));
 	}
 
-	void Broadcast::removeClient(const std::string &clientId)
+	void Broadcaster::removeClient(const std::string &clientId)
 	{
 		_iterator = _clients.find(clientId);
 		if (_iterator != _clients.end())
 			_clients.erase(clientId);
 	}
 
-	std::optional<Client> Broadcast::getClient(const std::string &clientId)
+	std::optional<Client> Broadcaster::getClient(const std::string &clientId)
 	{
 		std::optional<Client> ret;
 
@@ -32,4 +32,12 @@ namespace Queenside {
 		return (ret);
 	}
 
+/* Communication */
+void Broadcaster::Broadcast(std::string &msg)
+{}
+
+void Broadcaster::WriteToClient(const std::string &id, std::string &msg)
+{}
 }
+
+//TODO: finish writing the methods to write to clients

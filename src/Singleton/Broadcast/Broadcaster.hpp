@@ -1,5 +1,5 @@
-#ifndef QUEENSIDE_SERVICE_BROADCAST_HPP
-#define QUEENSIDE_SERVICE_BROADCAST_HPP
+#ifndef QUEENSIDE_SERVICE_BROADCASTER_HPP
+#define QUEENSIDE_SERVICE_BROADCASTER_HPP
 
 #include "Client.hpp"
 
@@ -10,14 +10,22 @@
 typedef std::string clientID;
 
 namespace Queenside {
-	class Broadcast {
+	class Broadcaster {
 		public:
-			static Broadcast& getInstance();
+			static Broadcaster& getInstance();
+
+			/* Clients Management */
 			void addClient(Client&);
 			void removeClient(const std::string &clientId);
+
+			/* Communication */
+			void Broadcast(std::string&);
+			void WriteToClient(const std::string&, std::string&);
+
+			/* Get Infos*/
 			std::optional<Client> getClient(const std::string &clientID);
 		private:
-			Broadcast() = default;
+			Broadcaster() = default;
 
 			std::unordered_map<clientID, Client> _clients;
 			std::unordered_map<clientID, Client>::iterator _iterator;
@@ -25,4 +33,4 @@ namespace Queenside {
 };
 //TODO: Add methods to communicate with clients, room, broadcast
 
-#endif /* !QUEENSIDE_SERVICE_BROADCAST_HPP */
+#endif /* !QUEENSIDE_SERVICE_BROADCASTER_HPP */

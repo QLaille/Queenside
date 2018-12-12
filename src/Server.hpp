@@ -9,7 +9,7 @@
 #include "IDGenerator.hpp"
 #include "OneOnOne.hpp"
 
-#include "Broadcast.hpp"
+#include "Broadcaster.hpp"
 #include "Coordinator.hpp"
 
 #define SERVER_PORT 4242

@@ -75,10 +75,21 @@ void OneOnOne::processRequest(const request_t &req)
 {
 	if (req._type == uci)
 		processPlayerUCI(req);
+	else if (req._type == text)
+		processPlayerText(req);
 	else
-		doWrite("REQUEST TYPE NOT SUPPORTED ATM");
-//	else
-//		processClient(req);
+		doWrite("I DO NOT UNDERSTAND THIS REQUEST TYPE");
+}
+
+void OneOnOne::processPlayerText(const request_t &req)
+{
+	switch (hash(req._name.c_str())) {
+		case hash(""):
+			break;
+		default:
+			doWrite("UNKNOWN UCI COMMAND");
+			break;
+	}
 }
 
 void OneOnOne::processPlayerUCI(const request_t &req)
