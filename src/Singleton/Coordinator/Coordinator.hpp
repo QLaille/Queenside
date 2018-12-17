@@ -9,6 +9,8 @@
 
 #include "Client.hpp"
 
+#define NO_ROOM "NoRoom"
+
 namespace Queenside {
 
 typedef std::unordered_map<std::string, bool> Players;
@@ -26,7 +28,7 @@ public:
 			static Coordinator& getInstance();
 
 			/* Find */
-			void findPlayer(const std::string &);
+			const std::optional<std::string> findPlayer(const std::string &);
 			const std::optional<std::string> findRoom(const std::string &);
 			const std::optional<std::string> findPlayerInRooms(const std::string &);
 			const std::optional<std::string> findPlayerNoRoom(const std::string &);

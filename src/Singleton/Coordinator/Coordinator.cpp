@@ -8,12 +8,15 @@ Coordinator& Coordinator::getInstance()
 	return (theInstance);
 }
 
-
 /* Find */
-void Coordinator::findPlayer(const std::string &Id)
+const std::optional<std::string> Coordinator::findPlayer(const std::string &Id)
 {
-	findPlayerNoRoom(Id);
-	findPlayerInRooms(Id);
+
+	if (auto noRoom = findPlayerNoRoom(Id))
+		return (NO_ROOM);
+	if (auto roomId = findPlayerInRooms(Id))
+		return (*roomId);
+	return (std::nullopt);
 }
 
 const std::optional<std::string> Coordinator::findRoom(const std::string &roomId)
@@ -49,20 +52,14 @@ const std::optional<std::string> Coordinator::findPlayerNoRoom(const std::string
 /* Clients Management */
 void Coordinator::addClient(const std::string &Id)
 {
-	//check if client is already here but not in a room
-	if (findPlayerNoRoom(Id) == std::nullopt)
-	_notInRoomIt = std::find(_notInRoom.begin(), _notInRoom.end(), Id);
-
-	if (_notInRoomIt != _notInRoom.end())
+	if (findPlayer(Id) == std::nullopt)
 		_notInRoom.push_front(Id);
 }
 
-
+/* Can remove client only if not in Room, if as a client you want to remove yourself, get out of the room first */
 bool Coordinator::removeClient(const std::string &Id)
 {
-	_notInRoomIt = std::find(_notInRoom.begin(), _notInRoom.end(), Id);
-
-	if (_notInRoomIt != _notInRoom.end()) {
+	if (findPlayerNoRoom(Id) == NO_ROOM) {
 		_notInRoom.remove(Id);
 		return (true);
 	}
@@ -82,31 +79,20 @@ bool Coordinator::moveClientToRoom(const std::string &clientId, const std::strin
 
 bool Coordinator::removeClientFromRoom(const std::string &Id)
 {
-	PlayersIt playersIt;
-
-	for (auto it: _rooms) {
-		playersIt = it.second.find(Id);
-		if (playersIt != it.second.end()) {
-			it.second.erase(Id);
-			return (true);
-		}
+	if (auto roomId = findPlayerInRooms(Id)) {
+		_rooms[*roomId].erase(Id);
+		return (true);
 	}
 	return (false);
 }
 
 void Coordinator::changeClientState(const std::string &Id)
 {
-	PlayersIt playersIt;
-
-	for (auto it: _rooms) {
-		playersIt = it.second.find(Id);
-		if (playersIt != it.second.end()) {
-			playersIt->second = true;
-			return;
-		}
+	if (auto roomId = findPlayerInRooms(Id)) {
+		_rooms.at(*roomId).at(Id) = true;
+		return;
 	}
 	return;
-
 }
 
 /* Room Management */
