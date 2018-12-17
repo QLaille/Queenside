@@ -22,6 +22,7 @@ namespace Queenside {
 			_clients.erase(clientId);
 	}
 
+	/* Get Infos*/
 	std::optional<Client> Broadcaster::getClient(const std::string &clientId)
 	{
 		std::optional<Client> ret;
@@ -34,10 +35,18 @@ namespace Queenside {
 
 /* Communication */
 void Broadcaster::Broadcast(std::string &msg)
-{}
+{
+	for (auto it: _clients) {
+		WriteToClient(it.first, msg);
+	}
+}
 
 void Broadcaster::WriteToClient(const std::string &id, std::string &msg)
-{}
+{
+	_iterator = _clients.find(id);
+	if (_iterator != _clients.end())
+		boost::asio::write(*_clients[id].getSocket(), boost::asio::buffer(msg));
+}
 }
 
 //TODO: finish writing the methods to write to clients

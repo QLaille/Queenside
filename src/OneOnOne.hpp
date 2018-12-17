@@ -14,7 +14,18 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/algorithm/string.hpp>
 
+#include "Broadcaster.hpp"
+#include "Coordinator.hpp"
+
 using boost::asio::ip::tcp;
+
+/**
+**
+**	OneOnOne class
+**
+**	Some would call it PeerToPeer, but this is the class used to communicate with a single client
+**	Managed by boost, it continuously loops between doRead and methods to parse a request
+*/
 
 namespace Queenside {
 class OneOnOne: public boost::enable_shared_from_this<OneOnOne> {
@@ -35,8 +46,15 @@ private:
 	/* Process Request */
 	void extractRequest(const boost::system::error_code& er, std::size_t len);
 	void processRequest(const request_t&);
-	void processPlayerText(const request_t &req);
-	void processPlayerUCI(const request_t &req);
+	void processClientText(const request_t &req);
+	void processClientUCI(const request_t &req);
+
+	/* Do Request */
+	void processJoin(const std::string&);
+	void processQuit(const std::string&);
+	void processInfoRoom(const std::string&);
+	void processInfoAllRoom(const std::string&);
+	void processReady(const std::string&);
 
 	std::shared_ptr<tcp::socket> _socket;
 	std::string _clientID;

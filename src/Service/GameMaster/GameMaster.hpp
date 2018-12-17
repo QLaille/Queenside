@@ -4,6 +4,16 @@
 #include <string>
 #include <utility>
 
+#include "Chess.hpp"
+
+/**
+**
+**	Gamemaster class
+**
+**	It's the referee class which rules a game of chess.
+**
+*/
+
 namespace Queenside {
 class GameMaster {
 public:
@@ -11,22 +21,20 @@ public:
 	GameMaster() = default;
 	~GameMaster() = default;
 
-	void playPiece();
+	void game();
+	bool playPiece(bool player, std::pair<move_t, move_t> move);
+	bool isCheck();
 	bool isCheckmate();
+	bool isDraw();
 	void translateToFEN();
 	void enPassant();
 	void Castle(playerSide, boardSide);
 	//read socket white or black
 	//read request
 private:
-	//socket white
-	//socket black
 	ChessPlayer _white;
 	ChessPlayer _black;
-
-	bool _turn;
-	std::string _pawnMove;	//used for En passant with the FEN
-	int _turns;
+	ChessBoard_t _board;
 };
 
 class ChessPlayer {
@@ -40,7 +48,7 @@ public:
 	void addMaterial();
 	void removeMaterial();
 private:
-	const std::string &_id;
+	const std::string _id;
 	std::string _material;
 	std::string _castle;
 };

@@ -9,6 +9,13 @@
 
 typedef std::string clientID;
 
+/**
+**
+**	Broadcaster class
+**
+**	Used to communicate to said client, gameRoom or to all clients.
+*/
+
 namespace Queenside {
 	class Broadcaster {
 		public:

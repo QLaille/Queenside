@@ -4,6 +4,8 @@
 #include <unordered_map>
 #include <algorithm>
 #include <list>
+#include <optional>
+#include <ctime>
 
 #include "Client.hpp"
 
@@ -12,28 +14,38 @@ namespace Queenside {
 typedef std::unordered_map<std::string, bool> Players;
 typedef std::unordered_map<std::string, bool>::iterator PlayersIt;
 
+/**
+**
+**	Coordinator class
+**
+**	Class managing Clients not in Games, will pass to GameMaster when a room is ready
+*/
+
 class Coordinator {
 public:
 			static Coordinator& getInstance();
 
 			/* Find */
 			void findPlayer(const std::string &);
-			void findRoom(const std::string &);
+			const std::optional<std::string> findRoom(const std::string &);
+			const std::optional<std::string> findPlayerInRooms(const std::string &);
+			const std::optional<std::string> findPlayerNoRoom(const std::string &);
 
 			/* Clients Management */
 			void addClient(const std::string&);
 			bool removeClient(const std::string&);
 			bool moveClientToRoom(const std::string&, const std::string&);
 			bool removeClientFromRoom(const std::string&);
+			void changeClientState(const std::string&);
 
 			/* Room Management */
-			const std::string &addRoom();
+			const std::string addRoom();
 			bool removeRoom(const std::string&);
 
 			/* Get Infos */
 			std::list<std::string> dumpRooms();
 			std::list<std::string> dumpPlayerFromRoom(const std::string&);
-			std::list<std::string> dumpPlayerNotInRoom();
+			const std::list<std::string> &dumpPlayerNotInRoom();
 
 private:
 			Coordinator() = default;

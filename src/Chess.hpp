@@ -19,6 +19,8 @@
 #define BLACK_KNIGHT n
 #define BLACK_PAWN p
 
+#define EMPTY_CELL '_'
+
 enum column {
 	a = 'a',
 	b = 'b',
@@ -57,7 +59,8 @@ struct castle_s {
 
 typedef
 struct ChessBoard_s {
-	std::string	_board;
+//	std::string	_board;
+	std::array<std::array<char, 8>, 8> _board;
 	bool		_turn;
 	std::size_t	_move;
 	move_t		_enPassant;

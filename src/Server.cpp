@@ -22,7 +22,7 @@ namespace Queenside {
 	{
 		Broadcaster bd = Broadcaster::getInstance();
 		Coordinator cd = Coordinator::getInstance();
-		Client client;
+		Client client(newConnection->socket());
 		std::string idc = "r";
 
 		client.setClientID(idc);

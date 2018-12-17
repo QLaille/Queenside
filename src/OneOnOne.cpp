@@ -18,7 +18,11 @@ OneOnOne::pointer OneOnOne::create(boost::asio::io_service& io)
 
 void OneOnOne::close()
 {
-	//remove client from broadcast
+	Broadcaster bd = Broadcaster::getInstance();
+	Coordinator cd = Coordinator::getInstance();
+
+	bd.removeClient(_clientID);
+	cd.removeClient(_clientID);
 	_socket->close();
 }
 
@@ -74,35 +78,51 @@ void OneOnOne::extractRequest(const boost::system::error_code& er, std::size_t l
 void OneOnOne::processRequest(const request_t &req)
 {
 	if (req._type == uci)
-		processPlayerUCI(req);
+		processClientUCI(req);
 	else if (req._type == text)
-		processPlayerText(req);
+		processClientText(req);
 	else
 		doWrite("I DO NOT UNDERSTAND THIS REQUEST TYPE");
 }
 
-void OneOnOne::processPlayerText(const request_t &req)
+void OneOnOne::processClientText(const request_t &req)
 {
+	std::string msg;
+
 	switch (hash(req._name.c_str())) {
-		case hash(""):
+		case hash("JOINROOM"):
+			_protocol.processJoin(_clientID, req);
+			break;
+		case hash("QUITROOM"):
+			_protocol.processQuit(_clientID, req);
+			break;
+		case hash("ROOMINFO"):
+			_protocol.processInfoRoom(_clientID, req);
+			break;
+		case hash("ALLROOM"):
+			_protocol.processInfoAllRoom(_clientID, req);
+			break;
+		case hash("READY"):
+			_protocol.processReady(_clientID, req);
 			break;
 		default:
-			doWrite("UNKNOWN UCI COMMAND");
+			msg = ("UNKNOWN UCI COMMAND");
 			break;
 	}
+	doWrite(msg);
 }
 
-void OneOnOne::processPlayerUCI(const request_t &req)
+void OneOnOne::processClientUCI(const request_t &req)
 {
 	switch (hash(req._name.c_str())) {
 		case hash("id"):
 			doWrite("ID COMMAND");
 			break;
 		case hash("uciok"):
-			doWrite("PLAYER HAS SENT ALL INFOS AND OPTIONS");
+			doWrite("Client HAS SENT ALL INFOS AND OPTIONS");
 			break;
 		case hash("readyok"):
-			doWrite("PLAYER IS READY TO PLAY");
+			doWrite("Client IS READY TO PLAY");
 			break;
 		case hash("bestmove"):
 			doWrite("PLAYING" + req._comment);

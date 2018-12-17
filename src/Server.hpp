@@ -16,6 +16,14 @@
 
 using boost::asio::ip::tcp;
 
+/**
+**
+**	Server class
+**
+**	"Entry point" of the server, accepts new connection and opens a OneOnOne
+**
+*/
+
 namespace Queenside {
 class Server {
 public:

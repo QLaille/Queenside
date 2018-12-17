@@ -7,6 +7,18 @@
 #include <iostream>
 
 #include "SwitchWithStrings.hpp"
+#include "Coordinator.hpp"
+
+
+/**
+**
+**	Protocol class,
+**		Defined by its ability to parse a request sent by a client via a socket
+**		Either in TEXT or UCI mode.
+**	We translate the TEXT mode as a Client request, and the UCI mode as a Player one.
+**	No binary mode yet implemented, we want to provide something usable by beginners.
+**
+*/
 
 namespace Queenside {
 
@@ -28,8 +40,21 @@ class Protocol {
 public:
 	Protocol() = default;
 	~Protocol() = default;
+
+	/* Parse request */
+	void processClientText(const request_t&);
+	void processClientUCI();
 	request_t getRequest(const std::string&);
 	request_t inTextMode(const std::string &txt);
+
+	/* Process Request */
+	bool processNewRoom(const std::string &);
+	bool processJoin(const std::string&, const request_t&);
+	void processQuit(const std::string&, const request_t&);
+	void processInfoRoom(const std::string&, const request_t&);
+	void processInfoAllRoom(const std::string&, const request_t&);
+	void processReady(const std::string&, const request_t&);
+
 private:
 };
 };

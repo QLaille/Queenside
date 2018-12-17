@@ -4,6 +4,16 @@
 #include <ctime>
 #include <string>
 
+/**
+**
+**	IDGenerator class
+**	Will generate an ID based on:
+**	Its type: G for GameRoom and C for Client
+**	A Timestamp
+**	A call of rand modulo 10000
+**
+*/
+
 namespace Queenside {
 	class IDGenerator {
 		public:
