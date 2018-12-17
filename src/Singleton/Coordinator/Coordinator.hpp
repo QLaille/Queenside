@@ -7,6 +7,8 @@
 #include <optional>
 #include <ctime>
 
+#include <iostream>
+
 #include "Client.hpp"
 
 #define NO_ROOM "NoRoom"

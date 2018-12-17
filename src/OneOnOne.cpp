@@ -64,13 +64,17 @@ void OneOnOne::extractRequest(const boost::system::error_code& er, std::size_t l
 	request_t request;
 
 	if (!er) {
-		std::copy_n(boost::asio::buffers_begin(_streamBuf.data()), len, std::back_inserter(msg));
+		std::copy_n(boost::asio::buffers_begin(_streamBuf.data()), len - 1, std::back_inserter(msg));
 		request = _protocol.getRequest(msg);
 		_streamBuf.consume(len);
+		std::cerr << "=============" << std::endl;
+		std::cerr << request._type << "\n" << request._name << "\n" << request._comment << std::endl;
+		std::cerr << "=====" << std::endl;
 		if (request._type == unknown)
 			doWrite("UNKNOWN REQUEST");
 		else
 			processRequest(request);
+		std::cerr << "=============" << std::endl;
 	} else
 		close();
 }
@@ -92,6 +96,7 @@ void OneOnOne::processClientText(const request_t &req)
 	switch (hash(req._name.c_str())) {
 		case hash("JOINROOM"):
 			_protocol.processJoin(_clientID, req);
+			msg = "Added in room";
 			break;
 		case hash("QUITROOM"):
 			_protocol.processQuit(_clientID, req);

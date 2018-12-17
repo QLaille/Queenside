@@ -70,6 +70,11 @@ bool Coordinator::moveClientToRoom(const std::string &clientId, const std::strin
 {
 	_roomsIt = _rooms.find(RoomId);
 
+	if (RoomId == "NEWROOM") {
+		auto newRoom = addRoom();
+		_rooms[newRoom].insert({clientId, false});
+		return (true);
+	}
 	if (_roomsIt != _rooms.end() && removeClient(clientId)) {
 		_roomsIt->second.insert({clientId, false});
 		return (true);
