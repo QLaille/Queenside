@@ -11,6 +11,7 @@
 
 #include "Broadcaster.hpp"
 #include "Coordinator.hpp"
+#include "IDGenerator.hpp"
 
 #define SERVER_PORT 4242
 
@@ -34,7 +35,6 @@ private:
 	void handleAccept(OneOnOne::pointer newConnection, const boost::system::error_code& er);
 
 	tcp::acceptor _acceptor;
-//	std::list<GameMaster> _games;
 };
 };
 

@@ -1,7 +1,7 @@
 #include "IDGenerator.hpp"
 
 namespace Queenside {
-std::string IDGenerator::generateIDClient()
+std::string generateClientID()
 {
 		std::string id;
 
@@ -10,11 +10,12 @@ std::string IDGenerator::generateIDClient()
 		return (id);
 }
 
-std::string IDGenerator::generateIDGame()
+
+std::string generateGameID()
 {
 		std::string id;
 
-		id = "R" + std::to_string(std::time(NULL));
+		id = "G" + std::to_string(std::time(NULL));
 		id += std::to_string(std::rand() % 10000);
 		return (id);
 }

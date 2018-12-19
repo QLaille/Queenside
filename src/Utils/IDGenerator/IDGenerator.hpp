@@ -15,11 +15,8 @@
 */
 
 namespace Queenside {
-	class IDGenerator {
-		public:
-			std::string generateIDClient();
-			std::string generateIDGame();
-	};
+std::string generateClientID();
+std::string generateGameID();
 };
 
 #endif /* !QUEENSIDE_SERVICE_IDGENERATOR_HPP */

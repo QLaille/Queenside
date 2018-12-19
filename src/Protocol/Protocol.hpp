@@ -49,11 +49,11 @@ public:
 
 	/* Process Request */
 	bool processNewRoom(const std::string &);
-	bool processJoin(const std::string&, const request_t&);
-	void processQuit(const std::string&, const request_t&);
-	void processInfoRoom(const std::string&, const request_t&);
-	void processInfoAllRoom(const std::string&, const request_t&);
-	void processReady(const std::string&, const request_t&);
+	const std::string processJoin(const std::string&, const request_t&);
+	std::string processQuit(const std::string&, const request_t&);
+	std::string processInfoRoom(const std::string&, const request_t&);
+	std::string processInfoAllRoom(const std::string&, const request_t&);
+	std::string processReady(const std::string&, const request_t&);
 
 private:
 };

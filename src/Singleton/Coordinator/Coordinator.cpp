@@ -1,11 +1,14 @@
 #include "Coordinator.hpp"
 
 namespace Queenside {
-Coordinator& Coordinator::getInstance()
-{
-	static Coordinator theInstance;
 
-	return (theInstance);
+Coordinator *Coordinator::_singleton = NULL;
+
+Coordinator *Coordinator::getInstance()
+{
+	if (_singleton == NULL)
+		_singleton = new Coordinator;
+	return (_singleton);
 }
 
 /* Find */
@@ -15,7 +18,7 @@ const std::optional<std::string> Coordinator::findPlayer(const std::string &Id)
 	if (auto noRoom = findPlayerNoRoom(Id))
 		return (NO_ROOM);
 	if (auto roomId = findPlayerInRooms(Id))
-		return (*roomId);
+		return (roomId.value());
 	return (std::nullopt);
 }
 
@@ -28,14 +31,14 @@ const std::optional<std::string> Coordinator::findRoom(const std::string &roomId
 	return (std::nullopt);
 }
 
-const std::optional<std::string> Coordinator::findPlayerInRooms(const std::string &Id)
+/* Find player and return its ID if found */
+const std::optional<std::string> Coordinator::findPlayerInRooms(const std::string &clientId)
 {
 	PlayersIt playersIt;
 
 	for (auto it: _rooms) {
-		playersIt = it.second.find(Id);
-		if (playersIt != it.second.end())
-			return (playersIt->first);
+		if ((it.second[0].first == clientId) || (it.second[1].first == clientId))
+			return (clientId);
 	}
 	return (std::nullopt);
 }
@@ -46,6 +49,16 @@ const std::optional<std::string> Coordinator::findPlayerNoRoom(const std::string
 
 	if (_notInRoomIt != _notInRoom.end())
 		return (*_notInRoomIt);
+	return (std::nullopt);
+}
+
+const std::optional<std::string> Coordinator::findRoomOfClient(const std::string &clientId)
+{
+	for (auto roomIt: _rooms) {
+		if ((roomIt.second[0].first == clientId)
+		|| (roomIt.second[1].first == clientId))
+			return (roomIt.first);
+	}
 	return (std::nullopt);
 }
 
@@ -66,47 +79,74 @@ bool Coordinator::removeClient(const std::string &Id)
 	return (false);
 }
 
-bool Coordinator::moveClientToRoom(const std::string &clientId, const std::string &RoomId)
+const std::optional<std::string> Coordinator::moveClientToRoom(const std::string &clientId, const std::string &RoomId)
 {
 	_roomsIt = _rooms.find(RoomId);
+	Players players;
 
 	if (RoomId == "NEWROOM") {
 		auto newRoom = addRoom();
-		_rooms[newRoom].insert({clientId, false});
-		return (true);
+		players[0].first = clientId;
+		players[0].second = false;
+		players[1].first = "EMPTY";
+		players[1].second = false;
+		_rooms[newRoom] = players;
+		return (newRoom);
 	}
-	if (_roomsIt != _rooms.end() && removeClient(clientId)) {
-		_roomsIt->second.insert({clientId, false});
-		return (true);
+	if (_roomsIt != _rooms.end()) {
+		if (auto prevRoom = findRoomOfClient(clientId))
+			removeClientFromRoom(clientId);
+		if (_roomsIt->second[0].first == "EMPTY") {
+			_roomsIt->second[0].first = clientId;
+			_roomsIt->second[0].second = false;
+		} else if (_roomsIt->second[1].first == "EMPTY") {
+			_roomsIt->second[1].first = clientId;
+			_roomsIt->second[1].second = false;
+		} else
+			return (std::nullopt);
+		return (RoomId);
+	}
+	return (std::nullopt);
+}
+
+bool Coordinator::removeClientFromRoom(const std::string &clientId)
+{
+	if (auto roomId = findRoomOfClient(clientId)) {
+		if (_rooms[roomId.value()][0].first == clientId) {
+			_rooms[roomId.value()][0].first = "EMPTY";
+			if (_rooms[roomId.value()][1].first == "EMPTY")
+				_rooms.erase(roomId.value());
+			return (true);
+		} else if (_rooms[*roomId][1].first == clientId) {
+			_rooms[*roomId][1].first = "EMPTY";
+			if (_rooms[roomId.value()][0].first == "EMPTY")
+				_rooms.erase(roomId.value());
+			return (true);
+		}
 	}
 	return (false);
 }
 
-bool Coordinator::removeClientFromRoom(const std::string &Id)
+/* Returns the ready state if we could attribute it to the player */
+bool Coordinator::changeClientState(const std::string &clientId, bool state)
 {
-	if (auto roomId = findPlayerInRooms(Id)) {
-		_rooms[*roomId].erase(Id);
-		return (true);
+	if (auto roomId = findRoomOfClient(clientId)) {
+		if (_rooms[roomId.value()][0].first == clientId)
+			_rooms[roomId.value()][0].second = state;
+		else if (_rooms[roomId.value()][1].first == clientId)
+			_rooms[roomId.value()][1].second = state;
+		return (state);
 	}
-	return (false);
-}
-
-void Coordinator::changeClientState(const std::string &Id)
-{
-	if (auto roomId = findPlayerInRooms(Id)) {
-		_rooms.at(*roomId).at(Id) = true;
-		return;
-	}
-	return;
+	return (!state);
 }
 
 /* Room Management */
 const std::string Coordinator::addRoom()
 {
-	std::string id;
+	std::string id = generateGameID();
 
-	id = "C" + std::to_string(std::time(NULL)) + std::to_string(std::rand() % 10000);
-	_rooms[id];
+	while(_rooms.find(id) != _rooms.end())
+		id = generateGameID();
 	return (id);
 }
 
@@ -124,7 +164,7 @@ bool Coordinator::removeRoom(const std::string &roomId)
 /* Get Infos */
 std::list<std::string> Coordinator::dumpRooms()
 {
-	std::list<std::string> ret = {0};
+	std::list<std::string> ret;
 
 	for (auto it: _rooms)
 		ret.push_front(it.first);
@@ -133,7 +173,7 @@ std::list<std::string> Coordinator::dumpRooms()
 
 std::list<std::string> Coordinator::dumpPlayerFromRoom(const std::string &roomId)
 {
-	std::list<std::string> ret = {0};
+	std::list<std::string> ret;
 	auto it = _rooms.find(roomId);
 
 	if (it != _rooms.end()) {

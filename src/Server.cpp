@@ -21,13 +21,15 @@ namespace Queenside {
 	void Server::handleAccept(OneOnOne::pointer newConnection, const boost::system::error_code& er)
 	{
 		Broadcaster bd = Broadcaster::getInstance();
-		Coordinator cd = Coordinator::getInstance();
+		Coordinator *cd = Coordinator::getInstance();
 		Client client(newConnection->socket());
-		std::string idc = "r";
+		std::string idc = generateClientID();
 
+		while (bd.getClient(idc) != std::nullopt)
+			idc = generateClientID();
 		client.setClientID(idc);
 		bd.addClient(client);
-		cd.addClient(client.getClientID());
+		cd->addClient(client.getClientID());
 		startAccept();
 		newConnection->start(client);
 	}

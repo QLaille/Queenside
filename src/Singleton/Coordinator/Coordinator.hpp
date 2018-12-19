@@ -10,13 +10,14 @@
 #include <iostream>
 
 #include "Client.hpp"
+#include "IDGenerator.hpp"
 
 #define NO_ROOM "NoRoom"
 
 namespace Queenside {
 
-typedef std::unordered_map<std::string, bool> Players;
-typedef std::unordered_map<std::string, bool>::iterator PlayersIt;
+typedef std::array<std::pair<std::string, bool>, 2> Players;
+typedef std::array<std::pair<std::string, bool>, 2>::iterator PlayersIt;
 
 /**
 **
@@ -27,20 +28,21 @@ typedef std::unordered_map<std::string, bool>::iterator PlayersIt;
 
 class Coordinator {
 public:
-			static Coordinator& getInstance();
+			static Coordinator *getInstance();
 
 			/* Find */
 			const std::optional<std::string> findPlayer(const std::string &);
 			const std::optional<std::string> findRoom(const std::string &);
 			const std::optional<std::string> findPlayerInRooms(const std::string &);
 			const std::optional<std::string> findPlayerNoRoom(const std::string &);
+			const std::optional<std::string> findRoomOfClient(const std::string&);
 
 			/* Clients Management */
 			void addClient(const std::string&);
 			bool removeClient(const std::string&);
-			bool moveClientToRoom(const std::string&, const std::string&);
+			const std::optional<std::string> moveClientToRoom(const std::string&, const std::string&);
 			bool removeClientFromRoom(const std::string&);
-			void changeClientState(const std::string&);
+			bool changeClientState(const std::string&, bool);
 
 			/* Room Management */
 			const std::string addRoom();
@@ -53,6 +55,7 @@ public:
 
 private:
 			Coordinator() = default;
+			static Coordinator *_singleton;
 
 			std::list<std::string> _notInRoom;
 			std::list<std::string>::iterator _notInRoomIt;

@@ -33,55 +33,64 @@ request_t Protocol::inTextMode(const std::string &txt)
 
 bool Protocol::processNewRoom(const std::string &clientId)
 {
-	Coordinator cd = Coordinator::getInstance();
+	Coordinator *cd = Coordinator::getInstance();
 
-	if (cd.moveClientToRoom(clientId, cd.addRoom()))
+	if (cd->moveClientToRoom(clientId, "NEWROOM"))
 		return(true);
 	return(false);
 }
 
 /* Process Request */
-bool Protocol::processJoin(const std::string &clientId, const request_t &req)
+const std::string Protocol::processJoin(const std::string &clientId, const request_t &req)
 {
-	Coordinator cd = Coordinator::getInstance();
+	Coordinator *cd = Coordinator::getInstance();
 	std::string roomId = req._comment;
 
-	if (cd.moveClientToRoom(clientId, roomId))
-		return (true);
-	return (false);
+	if (auto id = cd->moveClientToRoom(clientId, roomId))
+		return (id.value());
+	return ("IMPOSSIBLE");
 }
 
-void Protocol::processQuit(const std::string &Id, const request_t &req)
+std::string Protocol::processQuit(const std::string &Id, const request_t &req)
 {
-	Coordinator cd = Coordinator::getInstance();
+	Coordinator *cd = Coordinator::getInstance();
 
-	cd.removeClientFromRoom(Id);
-	//write to client
+	if (auto ret = cd->removeClientFromRoom(Id))
+		return ("REMOVED");
+	return ("NOT_IN_ROOM");
 }
 
-void Protocol::processInfoRoom(const std::string &Id, const request_t &req)
+std::string Protocol::processInfoRoom(const std::string &clientId, const request_t &req)
 {
-	Coordinator cd = Coordinator::getInstance();
-	std::string roomId;
+	Coordinator *cd = Coordinator::getInstance();
+	std::list<std::string> list;
+	std::string msg;
 
-	//roomID
-	cd.findPlayerInRooms(Id);
-	//write to client
-	cd.dumpPlayerFromRoom(roomId);
+	if (auto res = cd->findRoomOfClient(clientId))
+		list = cd->dumpPlayerFromRoom(res.value());
+		for (auto x: list)
+			msg = msg + (msg.size() == 0 ? "": "\nTEXT:ROOMINFO:") + x;
+		return (msg);
+	return ("NONE");
 }
 
-void Protocol::processInfoAllRoom(const std::string &Id, const request_t &req)
+std::string Protocol::processInfoAllRoom(const std::string &Id, const request_t &req)
 {
-	Coordinator cd = Coordinator::getInstance();
+	Coordinator *cd = Coordinator::getInstance();
+	std::list<std::string> list = cd->dumpRooms();
+	std::string msg;
 
-	//write to client
-	cd.dumpRooms();
+	for (auto x: list)
+		msg = msg + (msg.size() == 0 ? "": "\nTEXT:ALLROOM:") + x;
+	return (msg);
 }
 
-void Protocol::processReady(const std::string &Id, const request_t &req)
+std::string Protocol::processReady(const std::string &Id, const request_t &req)
 {
-	Coordinator cd = Coordinator::getInstance();
+	Coordinator *cd = Coordinator::getInstance();
 
-	cd.changeClientState("");
+	if (cd->changeClientState(Id, req._comment == "READY" ? true : false))
+		return (req._comment);
+	return ("NOT_IN_ROOM");
 }
 };

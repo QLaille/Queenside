@@ -19,10 +19,10 @@ OneOnOne::pointer OneOnOne::create(boost::asio::io_service& io)
 void OneOnOne::close()
 {
 	Broadcaster bd = Broadcaster::getInstance();
-	Coordinator cd = Coordinator::getInstance();
+	Coordinator *cd = Coordinator::getInstance();
 
 	bd.removeClient(_clientID);
-	cd.removeClient(_clientID);
+	cd->removeClient(_clientID);
 	_socket->close();
 }
 
@@ -52,8 +52,7 @@ void OneOnOne::asyncDoRead(const boost::system::error_code& er)
 				shared_from_this(),
 				boost::asio::placeholders::error,
 				boost::asio::placeholders::bytes_transferred
-			)
-		);
+		));
 	} else
 		close();
 }
@@ -67,14 +66,10 @@ void OneOnOne::extractRequest(const boost::system::error_code& er, std::size_t l
 		std::copy_n(boost::asio::buffers_begin(_streamBuf.data()), len - 1, std::back_inserter(msg));
 		request = _protocol.getRequest(msg);
 		_streamBuf.consume(len);
-		std::cerr << "=============" << std::endl;
-		std::cerr << request._type << "\n" << request._name << "\n" << request._comment << std::endl;
-		std::cerr << "=====" << std::endl;
 		if (request._type == unknown)
 			doWrite("UNKNOWN REQUEST");
 		else
 			processRequest(request);
-		std::cerr << "=============" << std::endl;
 	} else
 		close();
 }
@@ -95,25 +90,25 @@ void OneOnOne::processClientText(const request_t &req)
 
 	switch (hash(req._name.c_str())) {
 		case hash("JOINROOM"):
-			_protocol.processJoin(_clientID, req);
-			msg = "Added in room";
+			msg = "JOINROOM:" + _protocol.processJoin(_clientID, req);
 			break;
 		case hash("QUITROOM"):
-			_protocol.processQuit(_clientID, req);
+			msg = "QUITROOM:" + _protocol.processQuit(_clientID, req);
 			break;
 		case hash("ROOMINFO"):
-			_protocol.processInfoRoom(_clientID, req);
+			msg = "ROOMINFO:" + _protocol.processInfoRoom(_clientID, req);
 			break;
 		case hash("ALLROOM"):
-			_protocol.processInfoAllRoom(_clientID, req);
+			msg = "ALLROOM:" + _protocol.processInfoAllRoom(_clientID, req);
 			break;
-		case hash("READY"):
-			_protocol.processReady(_clientID, req);
+		case hash("STATE"):
+			msg = "STATE:" + _protocol.processReady(_clientID, req);
 			break;
 		default:
-			msg = ("UNKNOWN UCI COMMAND");
+			msg = ("UNKNOWN:COMMAND");
 			break;
 	}
+	msg = "TEXT:" + msg;
 	doWrite(msg);
 }
 
