@@ -4,6 +4,8 @@
 ** THIS SERVER ONLY USES THE ENGLISH NOTATION FOR NOW
 */
 #include <string>
+#include <cstddef>
+#include <array>
 
 #define WHITE_KING K
 #define WHITE_QUEEN Q
@@ -67,6 +69,20 @@ struct ChessBoard_s {
 	castle_t	_castles;
 	std::size_t	_halfMoves;
 } ChessBoard_t;
+
+///////////// GF
+
+
+
+typedef struct {
+	std::size_t	x;
+	std::size_t	y;
+} Pos_t;
+
+typedef struct {
+	Pos_t	prevPos;
+	Pos_t	postPos;
+} Move_t;
 
 
 #endif /* !CHESS_HPP */
