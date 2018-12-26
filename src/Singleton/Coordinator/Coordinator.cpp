@@ -84,7 +84,7 @@ const std::optional<std::string> Coordinator::moveClientToRoom(const std::string
 	_roomsIt = _rooms.find(RoomId);
 	Players players;
 
-	if (RoomId == "NEWROOM") {
+	if (RoomId == strings.newRoom) {
 		auto newRoom = addRoom();
 		players[0].first = clientId;
 		players[0].second = false;
@@ -94,8 +94,11 @@ const std::optional<std::string> Coordinator::moveClientToRoom(const std::string
 		return (newRoom);
 	}
 	if (_roomsIt != _rooms.end()) {
-		if (auto prevRoom = findRoomOfClient(clientId))
+		if (auto prevRoom = findRoomOfClient(clientId)) {
+			if (prevRoom.value() == RoomId)
+				return (RoomId);
 			removeClientFromRoom(clientId);
+		}
 		if (_roomsIt->second[0].first == "EMPTY") {
 			_roomsIt->second[0].first = clientId;
 			_roomsIt->second[0].second = false;
@@ -162,6 +165,18 @@ bool Coordinator::removeRoom(const std::string &roomId)
 }
 
 /* Get Infos */
+bool Coordinator::isRoomReady(const std::string &RoomId)
+{
+	auto room = _rooms.find(RoomId);
+	if (room != _rooms.end()) {
+		if ((room->second[0].first != "EMPTY" && room->second[1].first != "EMPTY")
+		&& (room->second[0].second && room->second[1].second))
+			return (true);
+	}
+	return (false);
+}
+
+
 std::list<std::string> Coordinator::dumpRooms()
 {
 	std::list<std::string> ret;

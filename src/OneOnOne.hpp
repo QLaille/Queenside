@@ -3,8 +3,10 @@
 
 #include "Client.hpp"
 #include "Protocol.hpp"
+#include "Strings.hpp"
 
 #include <string>
+#include <string.h>
 #include <memory>
 
 #include <boost/asio.hpp>
@@ -60,6 +62,7 @@ private:
 
 	std::shared_ptr<tcp::socket> _socket;
 	std::string _clientID;
+	bool _inGameRoom = false;
 	boost::asio::streambuf _streamBuf;
 	Protocol _protocol;
 };

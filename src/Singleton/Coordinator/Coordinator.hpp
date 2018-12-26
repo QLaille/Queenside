@@ -11,6 +11,7 @@
 
 #include "Client.hpp"
 #include "IDGenerator.hpp"
+#include "Strings.hpp"
 
 #define NO_ROOM "NoRoom"
 
@@ -49,6 +50,7 @@ public:
 			bool removeRoom(const std::string&);
 
 			/* Get Infos */
+			bool isRoomReady(const std::string&);
 			std::list<std::string> dumpRooms();
 			std::list<std::string> dumpPlayerFromRoom(const std::string&);
 			const std::list<std::string> &dumpPlayerNotInRoom();

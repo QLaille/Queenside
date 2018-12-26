@@ -7,8 +7,9 @@
 
 #include "SwitchWithStrings.hpp"
 #include "IDGenerator.hpp"
-#include "OneOnOne.hpp"
+#include "Strings.hpp"
 
+#include "OneOnOne.hpp"
 #include "Broadcaster.hpp"
 #include "Coordinator.hpp"
 #include "IDGenerator.hpp"

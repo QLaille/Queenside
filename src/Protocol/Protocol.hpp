@@ -8,7 +8,7 @@
 
 #include "SwitchWithStrings.hpp"
 #include "Coordinator.hpp"
-
+#include "Strings.hpp"
 
 /**
 **

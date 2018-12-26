@@ -1,11 +1,13 @@
 #include "Broadcaster.hpp"
 
 namespace Queenside {
-	Broadcaster& Broadcaster::getInstance()
-	{
-		static Broadcaster instance;
+	Broadcaster *Broadcaster::_singleton = NULL;
 
-		return (instance);
+	Broadcaster *Broadcaster::getInstance()
+	{
+		if (_singleton == NULL)
+			_singleton = new Broadcaster;
+		return (_singleton);
 	}
 
 	void Broadcaster::addClient(Client &client)

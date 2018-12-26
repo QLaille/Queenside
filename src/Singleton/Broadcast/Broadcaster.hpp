@@ -19,7 +19,7 @@ typedef std::string clientID;
 namespace Queenside {
 	class Broadcaster {
 		public:
-			static Broadcaster& getInstance();
+			static Broadcaster *getInstance();
 
 			/* Clients Management */
 			void addClient(Client&);
@@ -33,6 +33,7 @@ namespace Queenside {
 			std::optional<Client> getClient(const std::string &clientID);
 		private:
 			Broadcaster() = default;
+			static Broadcaster *_singleton;
 
 			std::unordered_map<clientID, Client> _clients;
 			std::unordered_map<clientID, Client>::iterator _iterator;

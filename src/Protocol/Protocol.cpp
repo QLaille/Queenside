@@ -48,7 +48,7 @@ const std::string Protocol::processJoin(const std::string &clientId, const reque
 
 	if (auto id = cd->moveClientToRoom(clientId, roomId))
 		return (id.value());
-	return ("IMPOSSIBLE");
+	return (strings.impossible);
 }
 
 std::string Protocol::processQuit(const std::string &Id, const request_t &req)
@@ -56,8 +56,8 @@ std::string Protocol::processQuit(const std::string &Id, const request_t &req)
 	Coordinator *cd = Coordinator::getInstance();
 
 	if (auto ret = cd->removeClientFromRoom(Id))
-		return ("REMOVED");
-	return ("NOT_IN_ROOM");
+		return (strings.removed);
+	return (strings.notInRoom);
 }
 
 std::string Protocol::processInfoRoom(const std::string &clientId, const request_t &req)
@@ -89,8 +89,12 @@ std::string Protocol::processReady(const std::string &Id, const request_t &req)
 {
 	Coordinator *cd = Coordinator::getInstance();
 
-	if (cd->changeClientState(Id, req._comment == "READY" ? true : false))
+	if (cd->changeClientState(Id, req._comment == "READY" ? true : false)) {
+		if (auto roomId = cd->findRoomOfClient(Id))
+			if (cd->isRoomReady(roomId.value()))
+				return (strings.roomReady);
 		return (req._comment);
-	return ("NOT_IN_ROOM");
+	}
+	return (strings.notInRoom);
 }
 };

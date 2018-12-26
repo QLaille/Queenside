@@ -18,10 +18,10 @@ OneOnOne::pointer OneOnOne::create(boost::asio::io_service& io)
 
 void OneOnOne::close()
 {
-	Broadcaster bd = Broadcaster::getInstance();
+	Broadcaster *bd = Broadcaster::getInstance();
 	Coordinator *cd = Coordinator::getInstance();
 
-	bd.removeClient(_clientID);
+	bd->removeClient(_clientID);
 	cd->removeClient(_clientID);
 	_socket->close();
 }
@@ -29,7 +29,7 @@ void OneOnOne::close()
 void OneOnOne::start(Client client)
 {
 	_clientID = client.getClientID();
-	doWrite(std::string("WELCOME"));
+	doWrite(std::string(strings.text + ":" + strings.welcome + ":" + _clientID));
 }
 
 void OneOnOne::doWrite(std::string msg)
@@ -67,7 +67,7 @@ void OneOnOne::extractRequest(const boost::system::error_code& er, std::size_t l
 		request = _protocol.getRequest(msg);
 		_streamBuf.consume(len);
 		if (request._type == unknown)
-			doWrite("UNKNOWN REQUEST");
+			doWrite(strings.unknown_request);
 		else
 			processRequest(request);
 	} else
@@ -86,27 +86,32 @@ void OneOnOne::processRequest(const request_t &req)
 
 void OneOnOne::processClientText(const request_t &req)
 {
-	std::string msg;
+	std::string msg = "INGAME:NOT_AVAILABLE";
 
-	switch (hash(req._name.c_str())) {
-		case hash("JOINROOM"):
-			msg = "JOINROOM:" + _protocol.processJoin(_clientID, req);
-			break;
-		case hash("QUITROOM"):
-			msg = "QUITROOM:" + _protocol.processQuit(_clientID, req);
-			break;
-		case hash("ROOMINFO"):
-			msg = "ROOMINFO:" + _protocol.processInfoRoom(_clientID, req);
-			break;
-		case hash("ALLROOM"):
-			msg = "ALLROOM:" + _protocol.processInfoAllRoom(_clientID, req);
-			break;
-		case hash("STATE"):
-			msg = "STATE:" + _protocol.processReady(_clientID, req);
-			break;
-		default:
-			msg = ("UNKNOWN:COMMAND");
-			break;
+	if (!_inGameRoom) {
+		switch (hash(req._name.c_str())) {
+			case hash("JOINROOM"):
+				msg = strings.joinRoom + ":" + _protocol.processJoin(_clientID, req);
+				break;
+			case hash("QUITROOM"):
+				msg =  strings.quitRoom + ":" + _protocol.processQuit(_clientID, req);
+				break;
+			case hash("ROOMINFO"):
+				msg = strings.roomInfo + ":" + _protocol.processInfoRoom(_clientID, req);
+				break;
+			case hash("ALLROOM"):
+				msg = strings.allRoom + ":" + _protocol.processInfoAllRoom(_clientID, req);
+				break;
+			case hash("STATE"):
+				auto ret = _protocol.processReady(_clientID, req);
+				if (ret == strings.roomReady)
+					_inGameRoom = true;
+				msg = strings.state + ":" + ret;
+				break;
+			default:
+				msg = ("UNKNOWN:COMMAND");
+				break;
+		}
 	}
 	msg = "TEXT:" + msg;
 	doWrite(msg);
@@ -131,16 +136,16 @@ void OneOnOne::processClientUCI(const request_t &req)
 			doWrite("USED FOR LOGS");
 			break;
 		case hash("option"):
-			doWrite("NOT AVAILABLE ATM");
+			doWrite(strings.unavailable);
 			break;
 		case hash("registration"):
-			doWrite("NOT AVAILABLE ATM");
+			doWrite(strings.unavailable);
 			break;
 		case hash("copyprotection"):
-			doWrite("NOT AVAILABLE ATM");
+			doWrite(strings.unavailable);
 			break;
 		default:
-			doWrite("UNKNOWN UCI COMMAND");
+			doWrite(strings.unknown_uci_command);
 			break;
 	}
 }
