@@ -1,73 +1,46 @@
-THE SERVER USES THE FEN NOTATION IN ENGLISH TO DESCRIBE CURRENT STATE OF THE BOARD :http://www.chessgames.com/fenhelp.html
 
-THE SERVER USES THE UNIVERSAL CHESS INTERFACE FOR SERVER AND PLAYERS TO COMMUNICATE :http://wbec-ridderkerk.nl/html/UCIProtocol.html
+# QUEENSIDE API
 
-Beforehand, we mainly use a text protocol, because we aim to get lower promotions of our school to start learning about networking.
-A binary protocol will be implemented in the future.
+## A message is consisted of 3 keywords: TYPE, NAME, COMMENT , separated by a colon **":"** and ends with a Line Feed **"\n"**
 
-A message consists of three words/sentences all separated by a colon (:).
-The first define the type of the message itself, it can either be TEXT, or UCI.
-The second is a keyword, representing your request (i.e., ROOMINFO to get infos of your current room).
-The third is a comment, used when necessary to provide more infos,
-depending on the context (i.e., when joining a room, NEWROOM makes you create a new room).
+### TYPE defines the "scope" of the message
 
-TEXT is when you want to speak to the server as a client.
+### NAME defines the actual request
 
-Name:ALLROOM
-Comment:None
-Description: Dumps the list of all room IDs.
-Answer: a list of strings, defining the IDs of all rooms.
+### COMMENT defines additional values if needed, otherwise, NULL
 
-Name:ROOMINFO
-Comment:None
-Description: Dumps the room players you are currently part of.
-Answer: two strings, your ID and the other player in the room.
+---
 
-Name:JOINROOM
-Comment:NEWROOM, RoomID
-Description: Makes you join a room, type NEWROOM if you want to create a new one or a Room ID for an existing one.
-Answer: the ID of the room you joined.
+#### Possible TYPEs of a request
 
-Name:QUITROOM
-Comment:None
-Description: Quits the current room you are part of.
-Answer: the comment REMOVED if you were removed from a room, else an error occured.
+-  **TEXT**: the request is aimed to the server as a client.
 
-Name:STATE
-Comment:READY, NOT_READY
-Description: State your availability to the server.
-Answer: your State if you were in a room, else an error occured.
+-  **UCI**: the request is aimed to the server as a player (i.e. when in a game).
 
-UCI is when you want to speak to it as a player, names and comments follows the uci.
+---
 
-Name:id
-Comment:name,author
-Description: Name of the engine and its author
+#### Possible TEXT requests
 
-Name:uciok
-Comment:None
-Description: Tells the server the player is ready and in uci mode, must be sent after sending infos.
+-  **ALLROOM**:NULL - Returns the list of all available rooms.
 
-Name:readyok
-Comment:None
-Description: Sent when the player received an "isready" from the server
+-  **ROOMINFO**:`$RoomId` - Returns infos about the players inside the room identified by its `$RoomId`.
 
-Name:bestmove
-Comment:move (i.e. "e2e4")
-Description: Tells the server the player stopped thinking and gives its best move for the current state of the board
+-  **JOINROOM**:`$RoomId` - Returns a `$RoomId` if successfully joined the room. If `$RoomId` is NEWROOM, will create a new room and return its new `$RoomId`.
 
-Name:info
-Comment:depth, seldepth,time,nodes,... (see the uci for the whole list of info commands)
-Description: The player is sending infos to the server, this can be interpreted as logs.
+-  **QUITROOM**:NULL - Quits the current room you are part of.
 
-Name:option
-Comment:None
-Description: This command is ignored, since it is relative to Engine parameters available for GUIs, thus client side.
+-  **STATE**:`$State` - Tells the server your `$State`, be it READY or anything else if you aren't.
 
-Name:registration
-Comment:None
-Description: This command is ignored, since it is relative to Engine parameters available for GUIs, thus client side.
+---
 
-Name:copyprotection
-Comment:None
-Description: This command is ignored, since it is relative to Engine parameters available for GUIs, thus client side.
+#### Possible UCI requests
+
+- id:`$Name` - provide the `$Name` of the player.
+
+- uciok:NULL - Tells the server the player is ready.
+
+- readyok:NULL - Sent when the player received a "isready" request from the server.
+
+- bestmove:`$Move` - Tells the server the player stopped thinking and is giving the starting and the ending point of a movement (i.e. e2e4 for White King's Pawn opening).
+
+- info:`$Infos` - Gives the server infos, this request can be interpreted as logs.
