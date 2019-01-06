@@ -15,7 +15,7 @@ namespace Queenside {
 
 	// Pawn
 
-	bool Pawn::validMove(ChessBoard_t chess, Move_t move)
+	bool Pawn::validMove(ChessBoard_t const &chess, Move_t const &move)
 	{
 		int dir = (Logic::isWhite(chess, move.prevPos) ? 1 : -1);
 		if (Logic::isAlly(chess, move)) {
@@ -42,7 +42,7 @@ namespace Queenside {
 		return false;
 	}
 
-	bool Pawn::hasNotMoved(ChessBoard_t chess, Pos_t pos)
+	bool Pawn::hasNotMoved(ChessBoard_t const &chess, Pos_t const &pos)
 	{
 		if (Logic::isWhite(chess, pos) && pos.y == line(1)) {
 			return true;
@@ -54,7 +54,7 @@ namespace Queenside {
 
 	// Rook
 
-	bool	Rook::validMove(ChessBoard_t chess, Move_t move)
+	bool	Rook::validMove(ChessBoard_t const &chess, Move_t const &move)
 	{
 		if (Logic::isAlly(chess, move)) {
 			return false;
@@ -71,7 +71,7 @@ namespace Queenside {
 
 	// Knight
 
-	bool	Knight::validMove(ChessBoard_t chess, Move_t move)
+	bool	Knight::validMove(ChessBoard_t const &chess, Move_t const &move)
 	{
 		if (Logic::isAlly(chess, move)) {
 			return false;
@@ -101,7 +101,7 @@ namespace Queenside {
 
 	// Bishop
 
-	bool	Bishop::validMove(ChessBoard_t chess, Move_t move)
+	bool	Bishop::validMove(ChessBoard_t const &chess, Move_t const &move)
 	{
 		if (Logic::isAlly(chess, move)) {
 			return false;
@@ -115,7 +115,7 @@ namespace Queenside {
 
 	// Queen
 
-	bool	Queen::validMove(ChessBoard_t chess, Move_t move)
+	bool	Queen::validMove(ChessBoard_t const &chess, Move_t const &move)
 	{
 		if (Logic::isAlly(chess, move)) {
 			return false;
@@ -135,10 +135,10 @@ namespace Queenside {
 
 	// King
 
-	bool	King::validMove(ChessBoard_t chess, Move_t move) {
-		if (isInCheck(chess, move.postPos)) {
+	bool	King::validMove(ChessBoard_t const &chess, Move_t const &move) {
+		/* if (isInCheck(chess, move.postPos)) {
 			return false;
-		} else if (Logic::isAlly(chess, move)) {
+		} else */if (Logic::isAlly(chess, move)) {
 			return false;
 		} else if (	(move.postPos.x == move.prevPos.x + 1 ||
 				move.postPos.x == move.prevPos.x - 1) &&
@@ -165,12 +165,12 @@ namespace Queenside {
 		return false;
 	}
 
-	bool	King::isPosInCheck(ChessBoard_t chess, Move_t move)
+	bool	King::isPosInCheck(ChessBoard_t const &chess, Move_t const &move)
 	{
 		bool	ret = true;
 
-		for (int j = 0; j < 8; j++) {
-			for (int i = 0; i < 8; i++) {
+		for (size_t j = 0; j < 8; j++) {
+			for (size_t i = 0; i < 8; i++) {
 				if (Logic::isOpponent(chess, {{.x = move.prevPos.x, .y = move.prevPos.y}, {.x = i, .y = j}}) == true &&
 				GameMaster::validMove(chess, {{ .x = i, .y = j}, {.x = move.postPos.x, .y = move.postPos.y}}) == true) {
 					ret = false;
@@ -184,7 +184,7 @@ namespace Queenside {
 
 	// Logic
 
-	bool	Logic::isWhite(ChessBoard_t chess, Pos_t pos)
+	bool	Logic::isWhite(ChessBoard_t const &chess, Pos_t const &pos)
 	{
 		if (isupper(chess._board[pos.y][pos.x])) {
 			return true;
@@ -192,7 +192,7 @@ namespace Queenside {
 		return false;
 	}
 
-	bool	Logic::isBlack(ChessBoard_t chess, Pos_t pos)
+	bool	Logic::isBlack(ChessBoard_t const &chess, Pos_t const &pos)
 	{
 		if (islower(chess._board[pos.y][pos.x])) {
 			return true;
@@ -200,7 +200,7 @@ namespace Queenside {
 		return false;
 	}
 
-	bool	Logic::isPiece(ChessBoard_t chess, Pos_t pos)
+	bool	Logic::isPiece(ChessBoard_t const &chess, Pos_t const &pos)
 	{
 		if (chess._board[pos.y][pos.x] == EMPTY_CELL) {
 			return false;
@@ -208,7 +208,7 @@ namespace Queenside {
 		return true;
 	}
 
-	bool	Logic::isOpponent(ChessBoard_t chess, Move_t move)
+	bool	Logic::isOpponent(ChessBoard_t const &chess, Move_t const &move)
 	{
 		if (	Logic::isWhite(chess, move.prevPos) &&
 			Logic::isBlack(chess, move.postPos)) {
@@ -220,7 +220,7 @@ namespace Queenside {
 		return false;
 	}
 
-	bool	Logic::isAlly(ChessBoard_t chess, Move_t move)
+	bool	Logic::isAlly(ChessBoard_t const &chess, Move_t const &move)
 	{
 		if (	Logic::isWhite(chess, move.prevPos) &&
 			Logic::isWhite(chess, move.postPos)) {
@@ -232,11 +232,11 @@ namespace Queenside {
 		return false;
 	}
 
-	std::vector<Pos_t>	Logic::getAllHorizontal(ChessBoard_t chess, Pos_t pos)
+	std::vector<Pos_t>	Logic::getAllHorizontal(ChessBoard_t const &chess, Pos_t const &pos)
 	{
 		std::vector<Pos_t>	allPos;
 
-		for (int i = 1; pos.x + i < 8; i++) {
+		for (size_t i = 1; pos.x + i < 8; i++) {
 			if (Logic::isAlly(chess, {pos.x + i, pos.y})) {
 				break;
 			}
@@ -245,7 +245,7 @@ namespace Queenside {
 				break;
 			}
 		}
-		for (int i = 1; pos.x - i >= 0; i++) {
+		for (size_t i = 1; pos.x - i >= 0; i++) {
 			if (Logic::isAlly(chess, {pos.x - i, pos.y})) {
 				break;
 			}
@@ -257,7 +257,7 @@ namespace Queenside {
 		return allPos;
 	}
 
-	std::vector<Pos_t>	Logic::getAllVertical(ChessBoard_t chess, Pos_t pos)
+	std::vector<Pos_t>	Logic::getAllVertical(ChessBoard_t const &chess, Pos_t const &pos)
 	{
 		std::vector<Pos_t>	allPos;
 
@@ -282,7 +282,7 @@ namespace Queenside {
 		return allPos;
 	}
 
-	std::vector<Pos_t>	Logic::getAllDiagonal(ChessBoard_t chess, Pos_t pos)
+	std::vector<Pos_t>	Logic::getAllDiagonal(ChessBoard_t const &chess, Pos_t const &pos)
 	{
 		std::vector<Pos_t>	allPos;
 

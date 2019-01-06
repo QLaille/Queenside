@@ -74,9 +74,15 @@ struct ChessBoard_s {
 
 
 
-typedef struct {
+typedef class Pos {
+public:
 	std::size_t	x;
 	std::size_t	y;
+
+	friend bool	operator==(Pos const &pos1, Pos const &pos2)
+	{
+		return pos1.x == pos2.x && pos1.y == pos2.y;
+	}
 } Pos_t;
 
 typedef struct {

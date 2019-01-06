@@ -52,7 +52,7 @@ public:
 	GameMaster() = default;
 	~GameMaster() = default;
 
-	static bool validMove(ChessBoard_t chess, Move_t move);
+	static bool validMove(ChessBoard_t const &chess, Move_t const &move);
 
 	void game();
 	bool playPiece(bool player, std::pair<move_t, move_t> move);

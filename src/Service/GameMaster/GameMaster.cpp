@@ -8,7 +8,7 @@ GameMaster::GameMaster(std::pair<std::string, std::string> players)
 : _white(players.first), _black(players.second)
 {}
 
-bool	GameMaster::validMove(ChessBoard_t chess, Move_t move)
+bool	GameMaster::validMove(ChessBoard_t const &chess, Move_t const &move)
 {
 	switch (chess._board[move.prevPos.y][move.prevPos.x]) {
 		case 'p':
