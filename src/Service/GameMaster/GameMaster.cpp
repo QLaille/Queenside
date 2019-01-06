@@ -8,6 +8,38 @@ GameMaster::GameMaster(std::pair<std::string, std::string> players)
 : _white(players.first), _black(players.second)
 {}
 
+bool	GameMaster::validMove(ChessBoard_t chess, Move_t move)
+{
+	switch (chess._board[move.prevPos.y][move.prevPos.x]) {
+		case 'p':
+		case 'P':
+			return Pawn::validMove(chess, move);
+			break;
+		case 'r':
+		case 'R':
+			return Rook::validMove(chess, move);
+			break;
+		case 'k':
+		case 'K':
+			return Knight::validMove(chess, move);
+			break;
+		case 'b':
+		case 'B':
+			return Rook::validMove(chess, move);
+			break;
+		case 'q':
+		case 'Q':
+			return Queen::validMove(chess, move);
+			break;
+		case 'k':
+		case 'K':
+			return King::validMove(chess, move);
+			break;
+		default:
+			return false;
+	}
+}
+
 void GameMaster::game()
 {
 	while(/*no game ending (1-0 or 1/2-1/2)*/1) {

@@ -12,41 +12,37 @@
 #include "Chess.hpp"
 
 namespace Queenside {
-	class Piece {
+	class Pawn {
 	public:
-		virtual bool validMove(ChessBoard_t chess, Move_t move);
+		static bool validMove(ChessBoard_t chess, Move_t move);
+		static bool hasNotMoved(ChessBoard_t chess, Pos_t pos);
 	};
 
-	class Pawn : public Piece {
+	class Rook {
 	public:
-		bool validMove(ChessBoard_t chess, Move_t move);
-		bool hasNotMoved(ChessBoard_t chess, Pos_t pos);
+		static bool validMove(ChessBoard_t chess, Move_t move);
 	};
 
-	class Rook : public Piece {
+	class Knight {
 	public:
-		bool validMove(ChessBoard_t chess, Move_t move);
+		static bool validMove(ChessBoard_t chess, Move_t move);
 	};
 
-	class Knight : public Piece {
+	class Bishop {
 	public:
-		bool validMove(ChessBoard_t chess, Move_t move);
+		static bool validMove(ChessBoard_t chess, Move_t move);
 	};
 
-	class Bishop : public Piece {
+	class Queen {
 	public:
-		bool validMove(ChessBoard_t chess, Move_t move);
+		static bool validMove(ChessBoard_t chess, Move_t move);
 	};
 
-	class Queen : public Piece {
+	class King {
 	public:
-		bool validMove(ChessBoard_t chess, Move_t move);
-	};
-
-	class King : public Piece {
-	public:
-		bool validMove(ChessBoard_t chess, Move_t move);
-		bool isInCheck(ChessBoard_t chess, Pos_t pos);
+		static bool validMove(ChessBoard_t chess, Move_t move);
+		static bool isPosInCheck(ChessBoard_t chess, Move_t move);
+		static bool isInCheck(ChessBoard_t chess, Pos_t pos);
 	};
 
 	class Logic {
@@ -58,6 +54,6 @@ namespace Queenside {
 		static bool			isAlly(ChessBoard_t chess, Move_t move);
 		static std::vector<Pos_t>	getAllHorizontal(ChessBoard_t chess, Pos_t pos);
 		static std::vector<Pos_t>	getAllVertical(ChessBoard_t chess, Pos_t pos);
-		static std::vector<Pos_t>	getAllVertical(ChessBoard_t chess, Pos_t pos);
+		static std::vector<Pos_t>	getAllDiagonal(ChessBoard_t chess, Pos_t pos);
 	};
 }

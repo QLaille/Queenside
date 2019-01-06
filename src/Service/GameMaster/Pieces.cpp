@@ -9,6 +9,7 @@
 #include <algorithm>
 
 #include "Pieces.hpp"
+#include "GameMaster.hpp"
 
 namespace Queenside {
 
@@ -23,7 +24,7 @@ namespace Queenside {
 				move.postPos.x == move.prevPos.x + 1 * dir) {
 			// simple move
 			return true;
-		} else if (	hasNotMoved(chess, move.prevPos) &&
+		} else if (	Pawn::hasNotMoved(chess, move.prevPos) &&
 				move.postPos.y == move.prevPos.y &&
 				move.postPos.x == move.prevPos.x + 2 * dir) {
 			// double move
@@ -143,25 +144,40 @@ namespace Queenside {
 				move.postPos.x == move.prevPos.x - 1) &&
 				move.postPos.y == move.prevPos.y) {
 			// LEFT or RIGHT
-			return true;
+			return King::isPosInCheck(chess, move);
 		} else if (	(move.postPos.y == move.prevPos.y + 1 ||
 				move.postPos.y == move.prevPos.y - 1) &&
 				move.postPos.x == move.prevPos.x) {
 			// UP or DOWN
-			return true;
+			return King::isPosInCheck(chess, move);
 		} else if (	(move.postPos.x == move.prevPos.x + 1 ||
 				move.postPos.x == move.prevPos.x - 1) &&
 				move.postPos.y == move.prevPos.y + 1) {
 			// UP LEFT or UP RIGHT
-			return true;
+			return King::isPosInCheck(chess, move);
 		} else if (	(move.postPos.x == move.prevPos.x + 1 ||
 				move.postPos.x == move.prevPos.x - 1) &&
 				move.postPos.y == move.prevPos.y - 1) {
 			// DOWN LEFT or DOWN RIGHT
-			return true;
+			return King::isPosInCheck(chess, move);
 		}
 		// TODO castle
 		return false;
+	}
+
+	bool	King::isPosInCheck(ChessBoard_t chess, Move_t move)
+	{
+		bool	ret = true;
+
+		for (int j = 0; j < 8; j++) {
+			for (int i = 0; i < 8; i++) {
+				if (Logic::isOpponent(chess, {{.y = move.prevPos.y, .x = move.prevPos.x}, {.y = j, .x = i}}) == true &&
+				GameMaster::validMove(chess, {{.y = j, .x = i}, {.y = move.postPos.y, .x = move.postPos.x}}) == true) {
+					ret = false;
+				}
+			}
+		}
+		return ret;
 	}
 
 	// TODO isInCheck()
