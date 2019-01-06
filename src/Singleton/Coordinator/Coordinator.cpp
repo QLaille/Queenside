@@ -81,7 +81,6 @@ bool Coordinator::removeClient(const std::string &Id)
 
 const std::optional<std::string> Coordinator::moveClientToRoom(const std::string &clientId, const std::string &RoomId)
 {
-	_roomsIt = _rooms.find(RoomId);
 	Players players;
 
 	if (RoomId == strings.newRoom) {
@@ -93,19 +92,18 @@ const std::optional<std::string> Coordinator::moveClientToRoom(const std::string
 		_rooms[newRoom] = players;
 		return (newRoom);
 	}
+	_roomsIt = _rooms.find(RoomId);
 	if (_roomsIt != _rooms.end()) {
 		if (auto prevRoom = findRoomOfClient(clientId)) {
 			if (prevRoom.value() == RoomId)
 				return (RoomId);
 			removeClientFromRoom(clientId);
 		}
-		if (_roomsIt->second[0].first == "EMPTY") {
-			_roomsIt->second[0].first = clientId;
-			_roomsIt->second[0].second = false;
-		} else if (_roomsIt->second[1].first == "EMPTY") {
-			_roomsIt->second[1].first = clientId;
-			_roomsIt->second[1].second = false;
-		} else
+		if (_roomsIt->second[0].first == "EMPTY")
+			_roomsIt->second[0] = {clientId, false};
+		else if (_roomsIt->second[1].first == "EMPTY")
+			_roomsIt->second[1] = {clientId, false};
+		else
 			return (std::nullopt);
 		return (RoomId);
 	}

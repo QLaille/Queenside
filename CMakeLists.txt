@@ -19,11 +19,14 @@ endif()
 ### PATH HANDLING
 SET (ROOT src)
 INCLUDE_DIRECTORIES(
+	${ROOT}
 	${ROOT}/Client
 	${ROOT}/Protocol
 	${ROOT}/Service
+	${ROOT}/Service/GameMaster
 	${ROOT}/Singleton/Broadcast
 	${ROOT}/Singleton/Coordinator
+	${ROOT}/Singleton/GameSync
 	${ROOT}/Utils
 	${ROOT}/Utils/IDGenerator
 )
@@ -33,8 +36,10 @@ FILE (GLOB SOURCES
 	"${ROOT}/Client/*.*pp"
 	"${ROOT}/Protocol/*.*pp"
 	"${ROOT}/Service/*.*pp"
+	"${ROOT}/Service/GameMaster/*.*pp"
 	"${ROOT}/Singleton/Broadcast/*.*pp"
 	"${ROOT}/Singleton/Coordinator/*.*pp"
+	"${ROOT}/Singleton/GameSync/*.*pp"
 	"${ROOT}/Utils/*.*pp"
 	"${ROOT}/Utils/IDGenerator/*.*pp"
 )

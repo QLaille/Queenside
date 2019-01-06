@@ -103,11 +103,13 @@ void OneOnOne::processClientText(const request_t &req)
 				msg = strings.allRoom + ":" + _protocol.processInfoAllRoom(_clientID, req);
 				break;
 			case hash("STATE"):
+			{
 				auto ret = _protocol.processReady(_clientID, req);
 				if (ret == strings.roomReady)
 					_inGameRoom = true;
 				msg = strings.state + ":" + ret;
 				break;
+			}
 			default:
 				msg = ("UNKNOWN:COMMAND");
 				break;
@@ -119,35 +121,42 @@ void OneOnOne::processClientText(const request_t &req)
 
 void OneOnOne::processClientUCI(const request_t &req)
 {
-	switch (hash(req._name.c_str())) {
-		case hash("id"):
-			doWrite("ID COMMAND");
-			break;
-		case hash("uciok"):
-			doWrite("Client HAS SENT ALL INFOS AND OPTIONS");
-			break;
-		case hash("readyok"):
-			doWrite("Client IS READY TO PLAY");
-			break;
-		case hash("bestmove"):
-			doWrite("PLAYING" + req._comment);
-			break;
-		case hash("info"):
-			doWrite("USED FOR LOGS");
-			break;
-		case hash("option"):
-			doWrite(strings.unavailable);
-			break;
-		case hash("registration"):
-			doWrite(strings.unavailable);
-			break;
-		case hash("copyprotection"):
-			doWrite(strings.unavailable);
-			break;
-		default:
-			doWrite(strings.unknown_uci_command);
-			break;
+	std::string msg = "GAME:NOT_IN_GAME";
+	Gamesync *gs = Gamesync::getInstance();
+
+	if (_inGameRoom) {
+		switch (hash(req._name.c_str())) {
+			case hash("id"):
+				msg = gs->idToGameMaster(_clientID, req._comment);
+				break;
+			case hash("uciok"):
+				msg = gs->uciokToGameMaster(_clientID, req._comment);
+				break;
+			case hash("readyok"):
+				msg = gs->readyokToGameMaster(_clientID, req._comment);
+				break;
+			case hash("bestmove"):
+				msg = gs->bestmoveToGameMaster(_clientID, req._comment);
+				break;
+			case hash("info"):
+				msg = gs->infoToGameMaster(_clientID, req._comment);
+				break;
+			case hash("option"):
+				msg = strings.unavailable;
+				break;
+			case hash("registration"):
+				msg = strings.unavailable;
+				break;
+			case hash("copyprotection"):
+				msg = strings.unavailable;
+				break;
+			default:
+				msg = strings.unknown_uci_command;
+				break;
+		}
 	}
+	msg = "UCI:" + msg;
+	doWrite(msg);
 }
 
 };

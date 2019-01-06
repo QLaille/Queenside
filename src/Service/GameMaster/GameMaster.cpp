@@ -27,10 +27,12 @@ bool GameMaster::playPiece(bool player, std::pair<move_t, move_t> move)
 	//check if move doesnt check yourself
 	_board._board; // move to next tile
 	_board._board; // get prev tile empty
+	return (true);
 }
 
 bool GameMaster::isDraw()
 {
+	return (true);
 }
 
 bool GameMaster::isCheckmate()
@@ -55,7 +57,7 @@ void GameMaster::enPassant()
 
 }
 
-void GameMaster::Castle(playerSide, boardSide)
+void GameMaster::Castle(playerSide p, boardSide b)
 {
 	//move king by 2 tiles
 	//get rook next to it

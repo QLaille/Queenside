@@ -4,6 +4,7 @@
 ** THIS SERVER ONLY USES THE ENGLISH NOTATION FOR NOW
 */
 #include <string>
+#include <array>
 
 #define WHITE_KING K
 #define WHITE_QUEEN Q
@@ -33,14 +34,14 @@ enum column {
 };
 
 enum line {
-	a = 1,
-	b = 2,
-	c = 3,
-	d = 4,
-	e = 5,
-	f = 6,
-	g = 7,
-	h = 8
+	aa = '1',
+	bb = '2',
+	cc = '3',
+	dd = '4',
+	ee = '5',
+	ff = '6',
+	gg = '7',
+	hh = '8'
 };
 
 typedef

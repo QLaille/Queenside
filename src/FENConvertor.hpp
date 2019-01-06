@@ -7,31 +7,6 @@
 
 #include "Chess.hpp"
 
-std::string convertToFenStr(ChessBoard_t &board)
-{
-	std::stringstream ret;
-
-	ret << boardToString(board._board) << " "
-	<< (board._turn == true ? "w" : "b") << " "
-	<< castlesToString(board._castles) << " "
-	<< moveToString(board._enPassant) << " "
-	<< std::to_string(board._halfMoves) << " "
-	<< std::to_string(board._move);
-	return (ret.str());
-}
-
-std::string boardToString(std::array<std::array<char, 8>, 8> board)
-{
-	std::stringstream ret;
-
-	for (int i = 0; i < 8; i++) {
-		ret << lineToString(board[i]);
-		if (i != 7)
-			ret << "/";
-	}
-	return (ret.str());
-}
-
 std::string lineToString(std::array<char, 8> ar)
 {
 	std::stringstream ret;
@@ -46,6 +21,18 @@ std::string lineToString(std::array<char, 8> ar)
 			ret << ar[j];
 			i = 0;
 		}
+	}
+	return (ret.str());
+}
+
+std::string boardToString(std::array<std::array<char, 8>, 8> board)
+{
+	std::stringstream ret;
+
+	for (int i = 0; i < 8; i++) {
+		ret << lineToString(board[i]);
+		if (i != 7)
+			ret << "/";
 	}
 	return (ret.str());
 }
@@ -67,8 +54,21 @@ std::string castlesToString(const castle_t &castles)
 	ret += castles._whiteQ ? "Q" : "";
 	ret += castles._blackK ? "k" : "";
 	ret += castles._blackQ ? "q" : "";
-	ret = ret.length == 0 ? "-" : ret;
+	ret = ret.length() == 0 ? "-" : ret;
 	return (ret);
+}
+
+std::string convertToFenStr(ChessBoard_t &board)
+{
+	std::stringstream ret;
+
+	ret << boardToString(board._board) << " "
+	<< (board._turn == true ? "w" : "b") << " "
+	<< castlesToString(board._castles) << " "
+	<< moveToString(board._enPassant) << " "
+	<< std::to_string(board._halfMoves) << " "
+	<< std::to_string(board._move);
+	return (ret.str());
 }
 
 #endif /* !QUEENSIDE_FEN_CONVERTOR_HPP */

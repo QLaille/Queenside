@@ -19,7 +19,7 @@
 
 #include "Broadcaster.hpp"
 #include "Coordinator.hpp"
-
+#include "GameSync.hpp"
 
 using boost::asio::ip::tcp;
 

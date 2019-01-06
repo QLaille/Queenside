@@ -15,6 +15,36 @@
 */
 
 namespace Queenside {
+
+	typedef
+	enum playerSide {
+		black,
+		white
+	} playerSide;
+
+	typedef
+	enum boardSide {
+		kingside,
+		queenside
+	} boardSide;
+
+class ChessPlayer {
+public:
+	ChessPlayer() = default;
+	ChessPlayer(const std::string &a):_id(a) {};
+	~ChessPlayer() = default;
+
+	void getId() {};
+	void setCastle() {};
+	void addMaterial() {};
+	void removeMaterial() {};
+private:
+	const std::string _id;
+	std::string _material;
+	std::string _castle;
+};
+
+
 class GameMaster {
 public:
 	GameMaster(std::pair<std::string, std::string>);
@@ -36,31 +66,6 @@ private:
 	ChessPlayer _black;
 	ChessBoard_t _board;
 };
-
-class ChessPlayer {
-public:
-	ChessPlayer() = default;
-	ChessPlayer(const std::string&);
-	~ChessPlayer() = default;
-
-	void getId();
-	void setCastle();
-	void addMaterial();
-	void removeMaterial();
-private:
-	const std::string _id;
-	std::string _material;
-	std::string _castle;
-};
-
-	enum playerSide {
-		black,
-		white
-	};
-	enum boardSide {
-		kingside,
-		queenside
-	};
 };
 
 #endif /* !QUEENSIDE_SERVICE_GAMEMASTER_HPP */
