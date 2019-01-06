@@ -107,7 +107,7 @@ namespace Queenside {
 			return false;
 		}
 		std::vector<Pos_t>	allPos = Logic::getAllDiagonal(chess, move.prevPos);
-		if (find(allPos.begin(), allPos.end(), move.postPos) != allPos.end()) {
+		if (std::find(allPos.begin(), allPos.end(), move.postPos) != allPos.end()) {
 			return true;
 		}
 		return false;
@@ -127,7 +127,7 @@ namespace Queenside {
 			return true;
 		} else if (std::find(allVertical.begin(), allVertical.end(), move.postPos) != allVertical.end()){
 			return true;
-		} else if (find(allDiagonal.begin(), allDiagonal.end(), move.postPos) != allDiagonal.end()) {
+		} else if (std::find(allDiagonal.begin(), allDiagonal.end(), move.postPos) != allDiagonal.end()) {
 			return true;
 		}
 		return false;
@@ -138,7 +138,7 @@ namespace Queenside {
 	bool	King::validMove(ChessBoard_t chess, Move_t move) {
 		if (isInCheck(chess, move.postPos)) {
 			return false;
-		} else if (Logic::isAlly(chess, move) {
+		} else if (Logic::isAlly(chess, move)) {
 			return false;
 		} else if (	(move.postPos.x == move.prevPos.x + 1 ||
 				move.postPos.x == move.prevPos.x - 1) &&
@@ -171,8 +171,8 @@ namespace Queenside {
 
 		for (int j = 0; j < 8; j++) {
 			for (int i = 0; i < 8; i++) {
-				if (Logic::isOpponent(chess, {{.y = move.prevPos.y, .x = move.prevPos.x}, {.y = j, .x = i}}) == true &&
-				GameMaster::validMove(chess, {{.y = j, .x = i}, {.y = move.postPos.y, .x = move.postPos.x}}) == true) {
+				if (Logic::isOpponent(chess, {{.x = move.prevPos.x, .y = move.prevPos.y}, {.x = i, .y = j}}) == true &&
+				GameMaster::validMove(chess, {{ .x = i, .y = j}, {.x = move.postPos.x, .y = move.postPos.y}}) == true) {
 					ret = false;
 				}
 			}

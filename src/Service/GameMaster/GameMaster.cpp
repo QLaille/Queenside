@@ -19,8 +19,8 @@ bool	GameMaster::validMove(ChessBoard_t chess, Move_t move)
 		case 'R':
 			return Rook::validMove(chess, move);
 			break;
-		case 'k':
-		case 'K':
+		case 'n':
+		case 'N':
 			return Knight::validMove(chess, move);
 			break;
 		case 'b':

@@ -20,7 +20,7 @@ namespace Queenside {
 
 	class Rook {
 	public:
-		static bool validMove(ChessBoard_t chess, Move_t move);
+		static bool validMove(ChessBoard_t chess, const Move_t move);
 	};
 
 	class Knight {
