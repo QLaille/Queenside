@@ -5,6 +5,7 @@
 #include <utility>
 
 #include "Chess.hpp"
+#include "Pieces.hpp"
 
 /**
 **
@@ -50,6 +51,8 @@ public:
 	GameMaster(std::pair<std::string, std::string>);
 	GameMaster() = default;
 	~GameMaster() = default;
+
+	static bool validMove(ChessBoard_t chess, Move_t move);
 
 	void game();
 	bool playPiece(bool player, std::pair<move_t, move_t> move);
