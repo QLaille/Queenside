@@ -63,7 +63,7 @@ std::string Protocol::processQuit(const std::string &Id, const request_t &req)
 std::string Protocol::processInfoRoom(const std::string &clientId, const request_t &req)
 {
 	Coordinator *cd = Coordinator::getInstance();
-	std::list<std::string> list;
+	std::vector<std::string> list;
 	std::string msg;
 
 	if (auto res = cd->findRoomOfClient(clientId))

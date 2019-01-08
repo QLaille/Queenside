@@ -59,6 +59,7 @@ private:
 	void processInfoRoom(const std::string&);
 	void processInfoAllRoom(const std::string&);
 	void processReady(const std::string&);
+	void initiateGame();
 
 	std::shared_ptr<tcp::socket> _socket;
 	std::string _clientID;

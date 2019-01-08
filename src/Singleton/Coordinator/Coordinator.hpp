@@ -6,12 +6,14 @@
 #include <list>
 #include <optional>
 #include <ctime>
+#include <vector>
 
 #include <iostream>
 
 #include "Client.hpp"
 #include "IDGenerator.hpp"
 #include "Strings.hpp"
+#include "Broadcaster.hpp"
 
 #define NO_ROOM "NoRoom"
 
@@ -52,7 +54,7 @@ public:
 			/* Get Infos */
 			bool isRoomReady(const std::string&);
 			std::list<std::string> dumpRooms();
-			std::list<std::string> dumpPlayerFromRoom(const std::string&);
+			std::vector<std::string> dumpPlayerFromRoom(const std::string&);
 			const std::list<std::string> &dumpPlayerNotInRoom();
 
 private:

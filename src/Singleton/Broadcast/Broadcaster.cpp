@@ -13,7 +13,7 @@ namespace Queenside {
 	void Broadcaster::addClient(Client &client)
 	{
 		_iterator = _clients.find(client.getClientID());
-		if (_iterator != _clients.end())
+		if (_iterator == _clients.end())
 			_clients.insert(std::pair<std::string, Client>(client.getClientID(), client));
 	}
 
@@ -27,7 +27,7 @@ namespace Queenside {
 	/* Get Infos*/
 	std::optional<Client> Broadcaster::getClient(const std::string &clientId)
 	{
-		std::optional<Client> ret;
+		std::optional<Client> ret = std::nullopt;
 
 		_iterator = _clients.find(clientId);
 		if (_iterator != _clients.end())
@@ -39,16 +39,14 @@ namespace Queenside {
 void Broadcaster::Broadcast(std::string &msg)
 {
 	for (auto it: _clients) {
-		WriteToClient(it.first, msg);
+		writeToClient(it.first, msg);
 	}
 }
 
-void Broadcaster::WriteToClient(const std::string &id, std::string &msg)
+void Broadcaster::writeToClient(const std::string &id, const std::string &msg)
 {
 	_iterator = _clients.find(id);
 	if (_iterator != _clients.end())
-		boost::asio::write(*_clients[id].getSocket(), boost::asio::buffer(msg));
+		boost::asio::write(*_clients[id].getSocket(), boost::asio::buffer(msg + "\n"));
 }
 }
-
-//TODO: finish writing the methods to write to clients

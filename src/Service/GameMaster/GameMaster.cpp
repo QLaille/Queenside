@@ -40,14 +40,18 @@ bool	GameMaster::validMove(ChessBoard_t const &chess, Move_t const &move)
 	}
 }
 
+void GameMaster::startGame()
+{
+	auto bd = Broadcaster::getInstance();
+	std::string msg = "UCI:BOARD:START";//translateToFEN();
+	//send white FEN string
+
+
+	bd->writeToClient(_white.getId(), msg);
+}
+
 void GameMaster::game()
 {
-	while(/*no game ending (1-0 or 1/2-1/2)*/1) {
-		//wait for correct move (no time involved yet)
-		//do the move
-		//check mates
-		//modify FEN string
-	}
 }
 
 bool GameMaster::playPiece(bool player, std::pair<move_t, move_t> move)
@@ -79,9 +83,9 @@ bool GameMaster::isCheck()
 	return(false);
 }
 
-void GameMaster::translateToFEN()
+const std::string GameMaster::translateToFEN()
 {
-	convertToFenStr(_board);
+	return (convertToFenStr(_board));
 }
 
 void GameMaster::enPassant()

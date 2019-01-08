@@ -82,6 +82,7 @@ bool Coordinator::removeClient(const std::string &Id)
 const std::optional<std::string> Coordinator::moveClientToRoom(const std::string &clientId, const std::string &RoomId)
 {
 	Players players;
+	auto bd = Broadcaster::getInstance();
 
 	if (RoomId == strings.newRoom) {
 		auto newRoom = addRoom();
@@ -99,11 +100,13 @@ const std::optional<std::string> Coordinator::moveClientToRoom(const std::string
 				return (RoomId);
 			removeClientFromRoom(clientId);
 		}
-		if (_roomsIt->second[0].first == "EMPTY")
+		if (_roomsIt->second[0].first == "EMPTY") {
 			_roomsIt->second[0] = {clientId, false};
-		else if (_roomsIt->second[1].first == "EMPTY")
+			bd->writeToClient(_roomsIt->second[1].first, "TEXT:ROOMJOIN:" + clientId);
+		} else if (_roomsIt->second[1].first == "EMPTY") {
 			_roomsIt->second[1] = {clientId, false};
-		else
+			bd->writeToClient(_roomsIt->second[0].first, "TEXT:ROOMJOIN:" + clientId);
+		} else
 			return (std::nullopt);
 		return (RoomId);
 	}
@@ -131,11 +134,16 @@ bool Coordinator::removeClientFromRoom(const std::string &clientId)
 /* Returns the ready state if we could attribute it to the player */
 bool Coordinator::changeClientState(const std::string &clientId, bool state)
 {
+	auto bd = Broadcaster::getInstance();
+
 	if (auto roomId = findRoomOfClient(clientId)) {
-		if (_rooms[roomId.value()][0].first == clientId)
+		if (_rooms[roomId.value()][0].first == clientId) {
 			_rooms[roomId.value()][0].second = state;
-		else if (_rooms[roomId.value()][1].first == clientId)
+			bd->writeToClient(_rooms[roomId.value()][1].first, "TEXT:STATE:PLAYER_READY");
+		} else if (_rooms[roomId.value()][1].first == clientId) {
 			_rooms[roomId.value()][1].second = state;
+			bd->writeToClient(_rooms[roomId.value()][0].first, "TEXT:STATE:PLAYER_READY");
+		}
 		return (state);
 	}
 	return (!state);
@@ -184,14 +192,14 @@ std::list<std::string> Coordinator::dumpRooms()
 	return (ret);
 }
 
-std::list<std::string> Coordinator::dumpPlayerFromRoom(const std::string &roomId)
+std::vector<std::string> Coordinator::dumpPlayerFromRoom(const std::string &roomId)
 {
-	std::list<std::string> ret;
+	std::vector<std::string> ret;
 	auto it = _rooms.find(roomId);
 
 	if (it != _rooms.end()) {
 		for (auto playerIt: it->second)
-			ret.push_front(playerIt.first);
+			ret.push_back(playerIt.first);
 	}
 	return (ret);
 }

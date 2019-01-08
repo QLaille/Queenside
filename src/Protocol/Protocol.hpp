@@ -54,8 +54,6 @@ public:
 	std::string processInfoRoom(const std::string&, const request_t&);
 	std::string processInfoAllRoom(const std::string&, const request_t&);
 	std::string processReady(const std::string&, const request_t&);
-
-private:
 };
 };
 

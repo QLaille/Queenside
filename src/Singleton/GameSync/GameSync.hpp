@@ -20,14 +20,14 @@ namespace Queenside {
 
 			const std::optional<std::string> findGameMaster(const std::string&);
 
-			void createGameMaster(const std::string&, const std::string&);
+			std::string createGameMaster(const std::string&, const std::string&);
 			void removeGameMaster(const std::string&);
 
-			const std::string idToGameMaster(const std::string&, const std::string&);
-			const std::string uciokToGameMaster(const std::string&, const std::string&);
-			const std::string readyokToGameMaster(const std::string&, const std::string&);
-			const std::string bestmoveToGameMaster(const std::string&, const std::string&);
-			const std::string infoToGameMaster(const std::string&, const std::string&);
+			const std::string idToGameMaster(const std::string &, const std::string &, const std::string&);
+			const std::string uciokToGameMaster(const std::string&, const std::string&, const std::string&);
+			const std::string readyokToGameMaster(const std::string&, const std::string&, const std::string&);
+			const std::string bestmoveToGameMaster(const std::string&, const std::string&, const std::string&);
+			const std::string infoToGameMaster(const std::string&, const std::string&, const std::string&);
 		private:
 			Gamesync() = default;
 			static Gamesync *_singleton;

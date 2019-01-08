@@ -17,18 +17,16 @@ const std::optional<std::string> Gamesync::findGameMaster(const std::string &id)
 	return (std::nullopt);
 }
 
-void Gamesync::createGameMaster(const std::string &idA, const std::string &idB)
+std::string Gamesync::createGameMaster(const std::string &idA, const std::string &idB)
 {
-	GameMaster gm;
+	GameMaster gm({idA, idB});
 	std::string gameId = generateGameID();
 
 	_gamemasters.insert({gameId, gm});
-	return; //gameID
+	_gamemasters[gameId].startGame();
+	return (gameId);
 }
 
-		// to be closed, a game must be over
-		//which means all players are gone
-		//for testing we only check if game is over
 void Gamesync::removeGameMaster(const std::string &id)
 {
 	if (auto masterId = findGameMaster(id)) {
@@ -37,28 +35,28 @@ void Gamesync::removeGameMaster(const std::string &id)
 	}
 }
 
-const std::string Gamesync::idToGameMaster(const std::string &id, const std::string &command)
+const std::string Gamesync::idToGameMaster(const std::string &gameId, const std::string &playerId, const std::string &command)
 {
 	return ("");
 }
 
-const std::string Gamesync::uciokToGameMaster(const std::string &id, const std::string &command)
+const std::string Gamesync::uciokToGameMaster(const std::string &gameId, const std::string &playerId, const std::string &command)
 {
 	return ("");
 }
 
-const std::string Gamesync::readyokToGameMaster(const std::string &id, const std::string &command)
+const std::string Gamesync::readyokToGameMaster(const std::string &gameId, const std::string &playerId, const std::string &command)
 {
 	return ("");
 }
 
-const std::string Gamesync::bestmoveToGameMaster(const std::string &id, const std::string &command)
+const std::string Gamesync::bestmoveToGameMaster(const std::string &gameId, const std::string &playerId, const std::string &command)
 {
 	//play
 	return ("");
 }
 
-const std::string Gamesync::infoToGameMaster(const std::string &id, const std::string &command)
+const std::string Gamesync::infoToGameMaster(const std::string &gameId, const std::string &playerId, const std::string &command)
 {
 	//logs
 	return ("");

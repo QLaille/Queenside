@@ -6,6 +6,7 @@
 #include <string>
 #include <optional>
 #include <unordered_map>
+#include <iostream>
 
 typedef std::string clientID;
 
@@ -27,7 +28,7 @@ namespace Queenside {
 
 			/* Communication */
 			void Broadcast(std::string&);
-			void WriteToClient(const std::string&, std::string&);
+			void writeToClient(const std::string&, const std::string&);
 
 			/* Get Infos*/
 			std::optional<Client> getClient(const std::string &clientID);

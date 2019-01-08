@@ -4,6 +4,8 @@
 #include <string>
 #include <utility>
 
+#include "Broadcaster.hpp"
+
 #include "Chess.hpp"
 #include "Pieces.hpp"
 
@@ -35,7 +37,7 @@ public:
 	ChessPlayer(const std::string &a):_id(a) {};
 	~ChessPlayer() = default;
 
-	void getId() {};
+	const std::string &getId() {return _id;};
 	void setCastle() {};
 	void addMaterial() {};
 	void removeMaterial() {};
@@ -54,16 +56,15 @@ public:
 
 	static bool validMove(ChessBoard_t const &chess, Move_t const &move);
 
+	void startGame();
 	void game();
 	bool playPiece(bool player, std::pair<move_t, move_t> move);
 	bool isCheck();
 	bool isCheckmate();
 	bool isDraw();
-	void translateToFEN();
+	const std::string translateToFEN();
 	void enPassant();
 	void Castle(playerSide, boardSide);
-	//read socket white or black
-	//read request
 private:
 	ChessPlayer _white;
 	ChessPlayer _black;

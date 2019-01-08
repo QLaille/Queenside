@@ -23,6 +23,7 @@ static struct String_s {
 	const std::string unknown_uci_command = "UNKNOWN UCI COMMAND";
 	const std::string text = "TEXT";
 	const std::string roomReady = "ROOMREADY";
+	const std::string noGameRoom = "NO_GAME_ROOM";
 } strings;
 };
 

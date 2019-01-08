@@ -87,6 +87,7 @@ void OneOnOne::processRequest(const request_t &req)
 void OneOnOne::processClientText(const request_t &req)
 {
 	std::string msg = "INGAME:NOT_AVAILABLE";
+	std::string ret;
 
 	if (!_inGameRoom) {
 		switch (hash(req._name.c_str())) {
@@ -104,9 +105,9 @@ void OneOnOne::processClientText(const request_t &req)
 				break;
 			case hash("STATE"):
 			{
-				auto ret = _protocol.processReady(_clientID, req);
+				ret = _protocol.processReady(_clientID, req);
 				if (ret == strings.roomReady)
-					_inGameRoom = true;
+					initiateGame();
 				msg = strings.state + ":" + ret;
 				break;
 			}
@@ -119,27 +120,52 @@ void OneOnOne::processClientText(const request_t &req)
 	doWrite(msg);
 }
 
+void OneOnOne::initiateGame()
+{
+	auto gs = Gamesync::getInstance();
+	auto cd = Coordinator::getInstance();
+	auto bc = Broadcaster::getInstance();
+	std::vector<std::string> players;
+	Client client;
+
+	if (auto room = cd->findRoomOfClient(_clientID))
+		players = cd->dumpPlayerFromRoom(room.value());
+	if (players.size() == 2) {
+		_inGameRoom = true;
+		auto gameRoom = gs->createGameMaster(players[0], players[1]);
+		if (auto cli = bc->getClient(players[0]))
+			client = cli.value();
+			client.setClientGameroom(gameRoom);
+		if (auto cli = bc->getClient(players[1]))
+			client = cli.value();
+			client.setClientGameroom(gameRoom);
+	}
+}
+
 void OneOnOne::processClientUCI(const request_t &req)
 {
 	std::string msg = "GAME:NOT_IN_GAME";
-	Gamesync *gs = Gamesync::getInstance();
+	auto bc = Broadcaster::getInstance();
+	auto gs = Gamesync::getInstance();
+	Client client;
 
-	if (_inGameRoom) {
+	if (auto cli = bc->getClient(_clientID)) {
+		client = cli.value();
 		switch (hash(req._name.c_str())) {
 			case hash("id"):
-				msg = gs->idToGameMaster(_clientID, req._comment);
+				msg = gs->idToGameMaster(client.getClientGameroom(), _clientID, req._comment);
 				break;
 			case hash("uciok"):
-				msg = gs->uciokToGameMaster(_clientID, req._comment);
+				msg = gs->uciokToGameMaster(client.getClientGameroom(), _clientID, req._comment);
 				break;
 			case hash("readyok"):
-				msg = gs->readyokToGameMaster(_clientID, req._comment);
+				msg = gs->readyokToGameMaster(client.getClientGameroom(), _clientID, req._comment);
 				break;
 			case hash("bestmove"):
-				msg = gs->bestmoveToGameMaster(_clientID, req._comment);
+				msg = gs->bestmoveToGameMaster(client.getClientGameroom(), _clientID, req._comment);
 				break;
 			case hash("info"):
-				msg = gs->infoToGameMaster(_clientID, req._comment);
+				msg = gs->infoToGameMaster(client.getClientGameroom(), _clientID, req._comment);
 				break;
 			case hash("option"):
 				msg = strings.unavailable;
