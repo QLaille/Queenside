@@ -25,6 +25,7 @@ namespace Queenside {
 			/* Clients Management */
 			void addClient(Client&);
 			void removeClient(const std::string &clientId);
+			void setClient(Client&);
 
 			/* Communication */
 			void Broadcast(std::string&);

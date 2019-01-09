@@ -24,6 +24,11 @@ namespace Queenside {
 			_clients.erase(clientId);
 	}
 
+	void Broadcaster::setClient(Client &client)
+	{
+		_clients[client.getClientID()] = client;
+	}
+
 	/* Get Infos*/
 	std::optional<Client> Broadcaster::getClient(const std::string &clientId)
 	{

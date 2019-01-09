@@ -6,7 +6,38 @@ namespace Queenside {
 
 GameMaster::GameMaster(std::pair<std::string, std::string> players)
 : _white(players.first), _black(players.second)
-{}
+{
+	_whiteTurn = true;
+//	_board._board[0] = std::array<char,9>("RNBQKBNR");
+	_board._board[0] = {'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'};
+	_board._board[1] = {'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'};
+	_board._board[2] = {'_', '_', '_', '_', '_', '_', '_', '_'};
+	_board._board[3] = {'_', '_', '_', '_', '_', '_', '_', '_'};
+	_board._board[4] = {'_', '_', '_', '_', '_', '_', '_', '_'};
+	_board._board[5] = {'_', '_', '_', '_', '_', '_', '_', '_'};
+	_board._board[6] = {'p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'};
+	_board._board[7] = {'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'};
+	// _board._board =
+	// {"RNBQKBNR",
+	// "PPPPPPPP",
+	// "________",
+	// "________",
+	// "________",
+	// "________",
+	// "pppppppp",
+	// "rnbqkbnr"};
+}
+
+const bool &GameMaster::isWhiteTurn()
+{
+	return (_whiteTurn);
+}
+
+void GameMaster::nextTurn()
+{
+	_whiteTurn = !_whiteTurn;
+}
+
 
 bool	GameMaster::validMove(ChessBoard_t const &chess, Move_t const &move)
 {
@@ -42,27 +73,19 @@ bool	GameMaster::validMove(ChessBoard_t const &chess, Move_t const &move)
 
 void GameMaster::startGame()
 {
-	auto bd = Broadcaster::getInstance();
-	std::string msg = "UCI:BOARD:START";//translateToFEN();
-	//send white FEN string
-
-
-	bd->writeToClient(_white.getId(), msg);
+	std::cerr << "Starting game between " << _white.getId() << " and " << _black.getId() << std::endl;
 }
 
-void GameMaster::game()
+bool GameMaster::playPiece(bool player, Move_t move)
 {
-}
+	ChessPlayer cp = (bool)player ? _white : _black;
 
-bool GameMaster::playPiece(bool player, std::pair<move_t, move_t> move)
-{
-	ChessPlayer gm = (bool)player ? _white : _black;
-
-	//is there a piece from player on this tile
-	//is there a piece on the way to the tile
 	//check if move doesnt check yourself
-	_board._board; // move to next tile
-	_board._board; // get prev tile empty
+	_board._board[move.postPos.y][move.postPos.x] = _board._board[move.prevPos.y][move.prevPos.x];
+	_board._board[move.prevPos.y][move.prevPos.x] = EMPTY_CELL;
+	_board._halfMoves += 1;
+	if (player)
+		_board._move += 1;
 	return (true);
 }
 
@@ -98,4 +121,20 @@ void GameMaster::Castle(playerSide p, boardSide b)
 	//move king by 2 tiles
 	//get rook next to it
 }
+
+const ChessBoard_t &GameMaster::getBoard()
+{
+	return (_board);
+}
+
+const ChessPlayer &GameMaster::getWhite()
+{
+	return (_white);
+}
+
+const ChessPlayer &GameMaster::getBlack()
+{
+	return (_black);
+}
+
 };

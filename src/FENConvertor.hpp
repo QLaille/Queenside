@@ -7,7 +7,7 @@
 
 #include "Chess.hpp"
 
-std::string lineToString(std::array<char, 8> ar)
+std::string lineToString(std::array<char, 9> ar)
 {
 	std::stringstream ret;
 	int i = 0;
@@ -22,16 +22,18 @@ std::string lineToString(std::array<char, 8> ar)
 			i = 0;
 		}
 	}
+	if (i != 0)
+		ret << i;
 	return (ret.str());
 }
 
-std::string boardToString(std::array<std::array<char, 8>, 8> board)
+std::string boardToString(std::array<std::array<char, 9>, 9> board)
 {
 	std::stringstream ret;
 
-	for (int i = 0; i < 8; i++) {
+	for (int i = 7; i >= 0; i--) {
 		ret << lineToString(board[i]);
-		if (i != 7)
+		if (i != 0)
 			ret << "/";
 	}
 	return (ret.str());

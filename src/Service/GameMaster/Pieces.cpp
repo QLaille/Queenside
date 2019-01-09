@@ -7,6 +7,7 @@
 
 #include <cctype>
 #include <algorithm>
+#include <iostream>
 
 #include "Pieces.hpp"
 #include "GameMaster.hpp"
@@ -18,15 +19,16 @@ namespace Queenside {
 	bool Pawn::validMove(ChessBoard_t const &chess, Move_t const &move)
 	{
 		int dir = (Logic::isWhite(chess, move.prevPos) ? 1 : -1);
+
 		if (Logic::isAlly(chess, move)) {
 			return false;
-		} else if (	move.postPos.y == move.prevPos.y &&
-				move.postPos.x == move.prevPos.x + 1 * dir) {
+		} else if (	move.postPos.y == move.prevPos.y + dir &&
+				move.postPos.x == move.prevPos.x) {
 			// simple move
 			return true;
 		} else if (	Pawn::hasNotMoved(chess, move.prevPos) &&
-				move.postPos.y == move.prevPos.y &&
-				move.postPos.x == move.prevPos.x + 2 * dir) {
+				move.postPos.y == (move.prevPos.y + (2 * dir)) &&
+				move.postPos.x == move.prevPos.x) {
 			// double move
 			return true;
 		} else if (	chess._board[move.postPos.y][move.postPos.x] ==
@@ -44,9 +46,9 @@ namespace Queenside {
 
 	bool Pawn::hasNotMoved(ChessBoard_t const &chess, Pos_t const &pos)
 	{
-		if (Logic::isWhite(chess, pos) && pos.y == line(1)) {
+		if (Logic::isWhite(chess, pos) && pos.y == 1) {
 			return true;
-		} else if (Logic::isBlack(chess, pos) && pos.y == line(6)) {
+		} else if (Logic::isBlack(chess, pos) && pos.y == 6) {
 			return true;
 		}
 		return false;

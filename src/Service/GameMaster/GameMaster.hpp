@@ -58,14 +58,20 @@ public:
 
 	void startGame();
 	void game();
-	bool playPiece(bool player, std::pair<move_t, move_t> move);
+	bool playPiece(bool, Move_t);
 	bool isCheck();
 	bool isCheckmate();
 	bool isDraw();
 	const std::string translateToFEN();
 	void enPassant();
 	void Castle(playerSide, boardSide);
+	const ChessBoard_t &getBoard();
+	const ChessPlayer &getWhite();
+	const ChessPlayer &getBlack();
+	const bool &isWhiteTurn();
+	void nextTurn();
 private:
+	bool _whiteTurn;
 	ChessPlayer _white;
 	ChessPlayer _black;
 	ChessBoard_t _board;

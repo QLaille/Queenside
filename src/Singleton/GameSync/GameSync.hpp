@@ -28,6 +28,7 @@ namespace Queenside {
 			const std::string readyokToGameMaster(const std::string&, const std::string&, const std::string&);
 			const std::string bestmoveToGameMaster(const std::string&, const std::string&, const std::string&);
 			const std::string infoToGameMaster(const std::string&, const std::string&, const std::string&);
+			const GameMaster &getGameMaster(const std::string&);
 		private:
 			Gamesync() = default;
 			static Gamesync *_singleton;

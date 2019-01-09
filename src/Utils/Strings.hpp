@@ -24,6 +24,7 @@ static struct String_s {
 	const std::string text = "TEXT";
 	const std::string roomReady = "ROOMREADY";
 	const std::string noGameRoom = "NO_GAME_ROOM";
+	const std::string uciStart = "UCI:GAME:START";
 } strings;
 };
 

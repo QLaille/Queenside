@@ -62,12 +62,12 @@ struct castle_s {
 typedef
 struct ChessBoard_s {
 //	std::string	_board;
-	std::array<std::array<char, 8>, 8> _board;
+	std::array<std::array<char, 9>, 9> _board;
 	bool		_turn;
-	std::size_t	_move;
+	std::size_t	_move = 0;
 	move_t		_enPassant;
 	castle_t	_castles;
-	std::size_t	_halfMoves;
+	std::size_t	_halfMoves = 0;
 } ChessBoard_t;
 
 ///////////// GF
