@@ -1,6 +1,10 @@
 
 # QUEENSIDE API
 
+#### First and foremost
+
+The API relies on the [Universal Chess Interface](https://ipfs.io/ipfs/QmXoypizjW3WknFiJnKLwHCnL72vedxjQkDDP1mXWo6uco/wiki/Universal_Chess_Interface.html) (UCI for short) for communicating between the server and its clients, and on the [Forsyth-Edwards Notation](http://portablegamenotation.com/Fen.html) (FEN) for declaring the state of a game.
+
 ## A message is consisted of 3 keywords: TYPE, NAME, COMMENT , separated by a colon **":"** and ends with a Line Feed **"\n"**
 
 ### TYPE defines the "scope" of the message
